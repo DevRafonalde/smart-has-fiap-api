@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface PerfilRepository extends JpaRepository<PerfilORM, Integer> {
     List<PerfilORM> findByNomeContaining(String nome);
-    PerfilORM findByMnemonico(String mnemonico);
 }
