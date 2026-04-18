@@ -16,6 +16,9 @@ public class UsuarioORM {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "cpf")
+    private String cpf;
+
     @Column(name = "nomeCompleto")
     private String nomeCompleto;
 

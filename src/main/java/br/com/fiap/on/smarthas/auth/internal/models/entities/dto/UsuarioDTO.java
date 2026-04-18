@@ -1,6 +1,8 @@
 package br.com.fiap.on.smarthas.auth.internal.models.entities.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,14 @@ public class UsuarioDTO {
 
     @NotBlank(message = "Insira o nome de usuário pelo qual o mesmo irá fazer login")
     private String nomeUser;
+
+    @NotBlank(message = "Insira uma senha")
+    @Size(min = 8, message = "A senha deve conter pelo menos 8 caracteres")
+//    @Pattern(
+//            regexp = "^(?=.[0-9])(?=.[a-z])(?=.[A-Z])(?=.[@#$%^&+=!])(?=\\S+$).{12,}$",
+//            message = "A senha deve conter maiúsculas, minúsculas, números e caracteres especiais"
+//    )
+    private String senhaUser;
 
     private Boolean ativo = true;
 }
