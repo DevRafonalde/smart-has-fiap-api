@@ -1,4 +1,4 @@
-package br.com.fiap.on.smartHas;
+package br.com.fiap.on.smarthas;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

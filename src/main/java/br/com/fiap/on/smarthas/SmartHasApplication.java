@@ -1,4 +1,4 @@
-package br.com.fiap.on.smartHas;
+package br.com.fiap.on.smarthas;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -57,16 +57,14 @@ smart-has-fiap-api/
 │   │   │   ├── config/                    # Configurações (Security, Redis, RabbitMQ)
 │   │   │   ├── shared/                    # Exceções, DTOs e Audit globais
 │   │   │   ├── auth/                      # Autenticação, JWT, RBAC
-│   │   │   ├── course/                    # Cursos, módulos e avaliações
-│   │   │   ├── progress/                  # Progresso, badges e gamificação
+│   │   │   ├── curso/                    # Cursos, módulos e avaliações
+│   │   │   ├── progresso/                  # Progresso, badges e gamificação
 │   │   │   ├── tutor/                     # Cadastro, matching e sessões
-│   │   │   ├── notification/              # Push, e-mail e SMS via RabbitMQ
-│   │   │   ├── guide/                     # Guia de serviços públicos
-│   │   │   └── analytics/                 # Métricas e relatórios
+│   │   │   ├── notificacao/              # Push, e-mail e SMS via RabbitMQ
+│   │   │   ├── guia/                     # Guia de serviços públicos
+│   │   │   └── metricas/                 # Métricas e relatórios
 │   │   └── resources/
-│   │       ├── application.yml
-│   │       ├── application-dev.yml
-│   │       ├── application-prod.yml
+│   │       ├── application.yaml
 │   │       └── db/migration/              # Scripts Flyway (V1__, V2__...)
 │   └── test/
 │       └── java/br/com/fiap/on/smarthas/ # Testes unitários e de integração
