@@ -172,7 +172,7 @@ docker compose up -d     # sobe novamente (Flyway recria tudo)
 
 ## 🔐 Autenticação
 
-> 📄 Para mais detalhes sobre a implementação do módulo de autenticação, veja: [AuthModule.md](./docs/AuthModule.md)
+> 📄 Para mais detalhes sobre a implementação e utilização do módulo de autenticação, veja: [AuthModule.md](./docs/AuthModule.md)
 
 A API utiliza **JWT Bearer Token**. Para acessar endpoints protegidos:
 
