@@ -9,22 +9,17 @@ import br.com.fiap.on.smarthas.shared.exceptions.AcessoNaoAutorizadoException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class PermissaoMiddleware implements HandlerInterceptor {
-
-    @Autowired
     private JwtService jwtService;
-
-    @Autowired
     private UsuarioService usuarioService;
-
-    @Autowired
     private PerfilService perfilService;
 
     @Override

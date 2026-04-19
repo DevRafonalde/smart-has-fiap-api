@@ -26,7 +26,6 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
-
     private final UsuarioRepository usuarioRepository;
     private final UsuarioPerfilRepository usuarioPerfilRepository;
     private final ModelMapper mapper;
@@ -161,5 +160,10 @@ public class UsuarioService {
     public void loginFeito(UsuarioORM usuario) {
         // Lógica opcional pós-login, como atualização de status ou auditoria
         // Exemplo: atualizar data de último acesso, etc.
+    }
+
+    public UsuarioORM buscarOrmPorId(Integer id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado"));
     }
 }

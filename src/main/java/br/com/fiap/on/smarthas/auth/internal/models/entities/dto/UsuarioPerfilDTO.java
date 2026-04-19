@@ -10,8 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioPerfilDTO {
-
     private UsuarioDTO usuario;
-
     private List<PerfilDTO> perfisUsuario;
 }

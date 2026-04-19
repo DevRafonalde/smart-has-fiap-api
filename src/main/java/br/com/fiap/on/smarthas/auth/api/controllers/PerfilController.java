@@ -6,7 +6,7 @@ import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.PerfilUsuarioDT
 import br.com.fiap.on.smarthas.auth.internal.services.PerfilService;
 import br.com.fiap.on.smarthas.shared.annotations.Permissao;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/perfis")
+@RequiredArgsConstructor
 public class PerfilController {
-
-    @Autowired
     private PerfilService perfilService;
 
     @PostMapping("/cadastrar")

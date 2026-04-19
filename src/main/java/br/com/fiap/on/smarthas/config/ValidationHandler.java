@@ -11,7 +11,6 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ValidationHandler {
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

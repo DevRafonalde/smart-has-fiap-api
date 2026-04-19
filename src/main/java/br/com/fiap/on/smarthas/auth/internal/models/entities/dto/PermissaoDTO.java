@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class PermissaoDTO {
-
     private Integer id;
 
     @NotBlank(message = "O nome da permissão é obrigatório")

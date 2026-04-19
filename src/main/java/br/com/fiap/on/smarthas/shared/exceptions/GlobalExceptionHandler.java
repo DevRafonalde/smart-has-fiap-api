@@ -11,7 +11,6 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(AcessoNaoAutorizadoException.class)
     public ResponseEntity<Map<String, Object>> handleUnauthorized(AcessoNaoAutorizadoException ex) {
         Map<String, Object> body = new HashMap<>();

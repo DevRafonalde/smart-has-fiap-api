@@ -1,7 +1,6 @@
 package br.com.fiap.on.smarthas.auth.internal.models.entities.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,6 @@ import lombok.ToString;
 @Data
 @ToString
 public class UsuarioDTO {
-
     private Integer id;
 
     @NotBlank(message = "Insira o nome completo do usuário")

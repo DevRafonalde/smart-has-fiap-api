@@ -12,7 +12,6 @@ import java.util.Base64;
 
 @Component
 public class GeradorChaveJwt {
-
     // Executa ao iniciar a aplicação
     @PostConstruct
     public void aoIniciar() {

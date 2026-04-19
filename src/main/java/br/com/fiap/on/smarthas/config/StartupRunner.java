@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class StartupRunner {
-
     @Bean
     public CommandLineRunner init(InicializacaoService inicializacaoService) {
         return args -> {

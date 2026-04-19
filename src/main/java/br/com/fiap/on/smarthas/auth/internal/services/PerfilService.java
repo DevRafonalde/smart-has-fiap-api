@@ -5,8 +5,8 @@ import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.*;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.*;
 import br.com.fiap.on.smarthas.shared.exceptions.ElementoNaoEncontradoException;
 import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,27 +18,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class PerfilService {
-
-    @Autowired
     private PerfilRepository perfilRepository;
-
-    @Autowired
     private PerfilPermissaoRepository perfilPermissaoRepository;
-
-    @Autowired
     private PermissaoRepository permissaoRepository;
-
-    @Autowired
     private UsuarioPerfilRepository usuarioPerfilRepository;
-
-    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private ModelMapper mapper;
-
-    @Autowired
     private Validator validator;
 
     /**

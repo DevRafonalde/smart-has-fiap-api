@@ -6,7 +6,7 @@ import br.com.fiap.on.smarthas.auth.api.controllers.UsuarioController;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.*;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.*;
 import br.com.fiap.on.smarthas.config.PasswordUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
@@ -17,20 +17,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class InicializacaoService {
-    @Autowired
     private PerfilRepository perfilRepository;
-
-    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private PermissaoRepository permissaoRepository;
-
-    @Autowired
     private PerfilPermissaoRepository perfilPermissaoRepository;
-
-    @Autowired
     private UsuarioPerfilRepository usuarioPerfilRepository;
 
     public void startSeeder() {

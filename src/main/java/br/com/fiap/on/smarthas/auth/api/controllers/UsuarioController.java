@@ -1,15 +1,15 @@
 package br.com.fiap.on.smarthas.auth.api.controllers;
 
-import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.LoginRequestDTO;
-import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.LoginResponseDTO;
-import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.UsuarioDTO;
-import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.UsuarioPerfilDTO;
+import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.*;
+import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.RefreshTokenORM;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.UsuarioORM;
 import br.com.fiap.on.smarthas.auth.internal.services.JwtService;
+import br.com.fiap.on.smarthas.auth.internal.services.RefreshTokenService;
 import br.com.fiap.on.smarthas.auth.internal.services.UsuarioService;
 import br.com.fiap.on.smarthas.shared.annotations.Permissao;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +17,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {
-    @Autowired
     private UsuarioService usuarioService;
-
-    @Autowired
     private JwtService jwtService;
+    private RefreshTokenService refreshTokenService;
 
     @PostMapping("/cadastrar")
     @Permissao(rota = "cadastrarusuario")
     public ResponseEntity<UsuarioPerfilDTO> cadastrarUsuario(@RequestBody UsuarioPerfilDTO usuarioPerfilRecebido) {
+        UsuarioPerfilDTO usuarioCadastrado = usuarioService.novoUsuario(usuarioPerfilRecebido);
+
+        return new ResponseEntity<>(usuarioCadastrado, HttpStatus.OK);
+    }
+
+    @PostMapping("/registrar")
+    public ResponseEntity<UsuarioPerfilDTO> autoRegistroUsuario(@RequestBody UsuarioPerfilDTO usuarioPerfilRecebido) {
         UsuarioPerfilDTO usuarioCadastrado = usuarioService.novoUsuario(usuarioPerfilRecebido);
 
         return new ResponseEntity<>(usuarioCadastrado, HttpStatus.OK);
@@ -78,8 +85,57 @@ public class UsuarioController {
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
         UsuarioORM usuario = usuarioService.autenticar(loginRequest.getNomeUser(), loginRequest.getSenha());
 
-        String token = jwtService.gerarToken(usuario);
+        String accessToken = jwtService.gerarToken(usuario);
+        RefreshTokenORM refreshToken = refreshTokenService.gerar(usuario);
 
-        return ResponseEntity.ok(new LoginResponseDTO(usuario.getId(), usuario.getNomeAmigavel(), usuario.getNomeUser(), token));
+        LoginResponseDTO response = new LoginResponseDTO(
+                usuario.getId(),
+                usuario.getNomeAmigavel(),
+                usuario.getNomeUser(),
+                accessToken,
+                refreshToken.getToken(),
+                jwtService.getExpiracaoSegundos()
+        );
+
+        log.debug("Login realizado para usuário id={}", usuario.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponseDTO> refresh(
+            @Valid @RequestBody RefreshTokenRequestDTO request
+    ) {
+        // Valida o refresh token recebido (lança exceção se inválido/expirado)
+        RefreshTokenORM refreshTokenValido = refreshTokenService.validar(request.getRefreshToken());
+
+        UsuarioORM usuario = refreshTokenValido.getUsuario();
+
+        // Revoga o token usado e gera um novo (rotação)
+        refreshTokenService.revogarUm(refreshTokenValido);
+        RefreshTokenORM novoRefreshToken = refreshTokenService.gerar(usuario);
+
+        String novoAccessToken = jwtService.gerarToken(usuario);
+
+        RefreshTokenResponseDTO response = new RefreshTokenResponseDTO(
+                novoAccessToken,
+                novoRefreshToken.getToken(),
+                jwtService.getExpiracaoSegundos()
+        );
+
+        log.debug("Tokens renovados para usuário id={}", usuario.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    // Logout — revoga todos os refresh tokens do usuário autenticado
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        int idUsuario = jwtService.validarTokenERetornarId(token);
+
+        UsuarioORM usuario = usuarioService.buscarOrmPorId(idUsuario);
+        refreshTokenService.revogarTodos(usuario);
+
+        log.debug("Logout realizado para usuário id={}", idUsuario);
+        return ResponseEntity.noContent().build();
     }
 }

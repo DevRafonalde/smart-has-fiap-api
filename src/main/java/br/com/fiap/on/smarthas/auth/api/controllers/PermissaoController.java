@@ -4,6 +4,7 @@ import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.PermissaoDTO;
 import br.com.fiap.on.smarthas.auth.internal.services.PermissaoService;
 import br.com.fiap.on.smarthas.shared.annotations.Permissao;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/permissoes")
+@RequiredArgsConstructor
 public class PermissaoController {
     @Autowired
     private PermissaoService permissaoService;

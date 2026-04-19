@@ -6,8 +6,8 @@ import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.PermissaoORM;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.PerfilPermissaoRepository;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.PermissaoRepository;
 import br.com.fiap.on.smarthas.shared.exceptions.ElementoNaoEncontradoException;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,15 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PermissaoService {
-
-    @Autowired
     private PermissaoRepository permissaoRepository;
-
-    @Autowired
     private PerfilPermissaoRepository perfilPermissaoRepository;
-
-    @Autowired
     private ModelMapper mapper;
 
     public List<PermissaoDTO> listarTodas(Pageable pageable) {
