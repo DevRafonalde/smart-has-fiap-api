@@ -176,7 +176,7 @@ A API utiliza **JWT Bearer Token**. Para acessar endpoints protegidos:
 
 **1. Registre um usuário:**
 ```http
-POST /api/auth/register
+POST /api/auth/usuarios/registrar
 Content-Type: application/json
 
 {
@@ -190,7 +190,7 @@ Content-Type: application/json
 
 **2. Faça login:**
 ```http
-POST /api/auth/login
+POST /api/auth/usuarios/login
 Content-Type: application/json
 
 {
@@ -204,7 +204,7 @@ Content-Type: application/json
 Authorization: Bearer <seu_token_aqui>
 ```
 
-> Os tokens expiram em **15 minutos**. Use o endpoint `/api/auth/refresh` com o refresh token para renová-los.
+> Os tokens expiram em **15 minutos**. Use o endpoint `/api/auth/usuarios/refresh` com o refresh token para renová-los.
 
 ---
 
@@ -252,11 +252,11 @@ Authorization: Bearer <seu_token_aqui>
 ## 📡 Principais Endpoints
 
 ### Auth
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/api/auth/register` | Cadastro de usuário |
-| `POST` | `/api/auth/login` | Login e geração de token |
-| `POST` | `/api/auth/refresh` | Renovação do token |
+| Método | Endpoint                      | Descrição |
+|---|-------------------------------|---|
+| `POST` | `/api/auth/usuarios/register` | Cadastro de usuário |
+| `POST` | `/api/auth/usuarios/login`    | Login e geração de token |
+| `POST` | `/api/auth/usuarios/refresh`  | Renovação do token |
 
 ### Cursos
 | Método | Endpoint | Descrição |
