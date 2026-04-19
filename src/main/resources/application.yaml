@@ -131,6 +131,8 @@ smarthas:
       cache-ttl-hours: 24           # TTL do cache das APIs gov.br
     lgpd:
       deletion-deadline-hours: 72   # RN08: prazo de exclusão de dados
+  security:
+    perfil-padrao: padrao
 
 # ── Actuator / Observabilidade ────────────────────────────────
 management:

@@ -6,6 +6,7 @@ import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.UsuarioPerfilDT
 import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.PerfilORM;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.UsuarioORM;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.UsuarioPerfilORM;
+import br.com.fiap.on.smarthas.auth.internal.models.repositories.PerfilRepository;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioPerfilRepository;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioRepository;
 import br.com.fiap.on.smarthas.config.PasswordUtil;
@@ -13,7 +14,9 @@ import br.com.fiap.on.smarthas.shared.exceptions.AtributoJaUtilizadoException;
 import br.com.fiap.on.smarthas.shared.exceptions.ElementoNaoEncontradoException;
 import br.com.fiap.on.smarthas.shared.utils.FormatarNomeMaiusculo;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +31,11 @@ import java.util.Objects;
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioPerfilRepository usuarioPerfilRepository;
+    private final PerfilRepository perfilRepository;
     private final ModelMapper mapper;
+
+    @Value("${smarthas.security.perfil-padrao}")
+    private String perfilPadrao;
 
     public List<UsuarioDTO> listarTodos(Pageable pageable) {
         Page<UsuarioORM> usuarios = usuarioRepository.findAll(pageable);
@@ -89,23 +96,7 @@ public class UsuarioService {
 
         UsuarioORM usuarioCadastrado = usuarioRepository.save(usuarioRecebido);
 
-        List<PerfilORM> perfis = usuarioPerfilDTO.getPerfisUsuario()
-                .stream()
-                .map(perfilDTO -> mapper.map(perfilDTO, PerfilORM.class))
-                .toList();
-
-        List<PerfilDTO> perfisDto = new ArrayList<>();
-
-        for (PerfilORM perfil : perfis) {
-            UsuarioPerfilORM usuarioPerfil = new UsuarioPerfilORM();
-            usuarioPerfil.setUsuario(usuarioCadastrado);
-            usuarioPerfil.setDataHora(LocalDateTime.now());
-            usuarioPerfil.setPerfil(perfil);
-            usuarioPerfilRepository.save(usuarioPerfil);
-            perfisDto.add(mapper.map(perfil, PerfilDTO.class));
-        }
-
-        return new UsuarioPerfilDTO(mapper.map(usuarioCadastrado, UsuarioDTO.class), perfisDto);
+        return vincularPerfisAoUsuario(usuarioPerfilDTO, usuarioCadastrado, usuarioCadastrado);
     }
 
     public UsuarioPerfilDTO editar(UsuarioPerfilDTO modeloCadastroUsuarioPerfil) {
@@ -130,10 +121,35 @@ public class UsuarioService {
         List<UsuarioPerfilORM> registrosExistentes = usuarioPerfilRepository.findByUsuario(usuarioRecebido);
         usuarioPerfilRepository.deleteAll(registrosExistentes);
 
-        List<PerfilORM> perfis = modeloCadastroUsuarioPerfil.getPerfisUsuario()
-                .stream()
-                .map(perfilDTO -> mapper.map(perfilDTO, PerfilORM.class))
-                .toList();
+        return vincularPerfisAoUsuario(modeloCadastroUsuarioPerfil, usuarioRecebido, usuarioSalvo);
+    }
+
+    // TODO Fazer um genérico para quando não mandar perfil nenhum, ele vincular a um usuário comum
+    // TODO Arrumar o readme pra colocar os JSON certos
+
+    @NonNull
+    private UsuarioPerfilDTO vincularPerfisAoUsuario(
+            UsuarioPerfilDTO modeloCadastroUsuarioPerfil,
+            UsuarioORM usuarioRecebido,
+            UsuarioORM usuarioSalvo) {
+
+        List<PerfilORM> perfis;
+
+        if (modeloCadastroUsuarioPerfil.getPerfisUsuario() == null
+                || modeloCadastroUsuarioPerfil.getPerfisUsuario().isEmpty()) {
+
+            PerfilORM perfilDefault = perfilRepository.findByMnemonico(perfilPadrao)
+                    .orElseThrow(() -> new RuntimeException("Perfil padrão não encontrado"));
+
+            perfis = List.of(perfilDefault);
+
+        } else {
+
+            perfis = modeloCadastroUsuarioPerfil.getPerfisUsuario()
+                    .stream()
+                    .map(this::resolverPerfil)
+                    .toList();
+        }
 
         List<PerfilDTO> perfisDto = new ArrayList<>();
 
@@ -142,11 +158,16 @@ public class UsuarioService {
             usuarioPerfil.setUsuario(usuarioRecebido);
             usuarioPerfil.setDataHora(LocalDateTime.now());
             usuarioPerfil.setPerfil(perfil);
+
             usuarioPerfilRepository.save(usuarioPerfil);
+
             perfisDto.add(mapper.map(perfil, PerfilDTO.class));
         }
 
-        return new UsuarioPerfilDTO(mapper.map(usuarioSalvo, UsuarioDTO.class), perfisDto);
+        return new UsuarioPerfilDTO(
+                mapper.map(usuarioSalvo, UsuarioDTO.class),
+                perfisDto
+        );
     }
 
     public UsuarioORM autenticar(String nomeUser, String senha) {
@@ -165,5 +186,14 @@ public class UsuarioService {
     public UsuarioORM buscarOrmPorId(Integer id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado"));
+    }
+
+    private PerfilORM resolverPerfil(PerfilDTO dto) {
+        if (dto.getId() == null) {
+            throw new IllegalArgumentException("Perfil deve possuir ID");
+        }
+
+        return perfilRepository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Perfil não encontrado: " + dto.getId()));
     }
 }

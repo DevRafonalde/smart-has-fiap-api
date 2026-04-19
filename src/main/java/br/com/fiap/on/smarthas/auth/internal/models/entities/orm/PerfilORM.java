@@ -22,6 +22,9 @@ public class PerfilORM {
     @Column(name = "descricao")
     private String descricao;
 
+    @Column(name = "mnemonico")
+    private String mnemonico;
+
     @Column(name = "ativo")
     private Boolean ativo = true;
 }
