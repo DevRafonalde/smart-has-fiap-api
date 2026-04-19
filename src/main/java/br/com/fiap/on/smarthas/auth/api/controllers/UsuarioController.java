@@ -19,7 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/auth/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
     private UsuarioService usuarioService;

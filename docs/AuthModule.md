@@ -149,7 +149,7 @@ Se as credenciais são válidas, o sistema emite dois tokens: um **access token*
 ```
 Cliente                          API
   │                               │
-  │  POST /usuarios/login         │
+  │  POST /auth/usuarios/login         │
   │  { nomeUser, senha }          │
   │ ─────────────────────────────>│
   │                               │  1. Busca usuário por nomeUser
@@ -186,7 +186,7 @@ O módulo implementa **rotação de refresh token**: a cada chamada em `/refresh
 ```
 Cliente                          API
   │                               │
-  │  POST /usuarios/refresh       │
+  │  POST /auth/usuarios/refresh       │
   │  { refreshToken: "uuid..." }  │
   │ ─────────────────────────────>│
   │                               │  1. Busca token no banco
@@ -211,7 +211,7 @@ O logout revoga **todos** os refresh tokens do usuário. O access token ainda é
 ```
 Cliente                          API
   │                               │
-  │  POST /usuarios/logout        │
+  │  POST /auth/usuarios/logout        │
   │  Authorization: Bearer <jwt>  │
   │ ─────────────────────────────>│
   │                               │  1. Extrai idUsuario do JWT
@@ -257,34 +257,35 @@ Algum perfil tem a permissão com nome == rota exigida?
 
 ### Públicos (não exigem token)
 
-| Método | Rota | Descrição |
-|---|---|---|
-| `POST` | `/usuarios/login` | Autenticação — retorna access + refresh token |
-| `POST` | `/usuarios/refresh` | Renova os tokens com o refresh token |
+| Método | Rota                       | Descrição                                     |
+|---|----------------------------|-----------------------------------------------|
+| `POST` | `/auth/usuarios/login`     | Autenticação — retorna access + refresh token |
+| `POST` | `/auth/usuarios/refresh`   | Renova os tokens com o refresh token          |
+| `POST` | `/auth/usuarios/registrar` | Usuário faz o cadastro do próprio usuário     |
 
 ### Autenticados (exigem `Authorization: Bearer <token>`)
 
-| Método | Rota | Permissão exigida | Descrição |
-|---|---|---|---|
-| `POST` | `/usuarios/logout` | — (só valida o JWT) | Revoga todos os refresh tokens |
-| `POST` | `/usuarios/cadastrar` | `cadastrarusuario` | Cadastra novo usuário |
-| `GET` | `/usuarios/listar` | `listartodosusuarios` | Lista usuários paginado |
-| `GET` | `/usuarios/listar-especifico/{id}` | `listarusuarioespecifico` | Detalhe de um usuário |
-| `GET` | `/usuarios/clonar/{id}` | `clonarusuario` | Clona dados de um usuário |
-| `PUT` | `/usuarios/editar` | `editarusuario` | Atualiza dados do usuário |
-| `DELETE` | `/usuarios/deletar/{id}` | `deletarusuario` | Remove um usuário |
-| `POST` | `/perfis/cadastrar` | `cadastrarperfil` | Cadastra novo perfil |
-| `GET` | `/perfis/listar` | `listartodosperfis` | Lista perfis paginado |
-| `GET` | `/perfis/listar-especifico/{id}` | `listarperfilespecifico` | Detalhe de um perfil |
-| `GET` | `/perfis/listar-usuarios-vinculados/{id}` | `listarusuariosvinculados` | Usuários do perfil |
-| `GET` | `/perfis/clonar/{id}` | `clonarperfil` | Clona um perfil |
-| `PUT` | `/perfis/editar` | `editarperfil` | Atualiza um perfil |
-| `DELETE` | `/perfis/deletar/{id}` | `deletarperfil` | Remove um perfil |
-| `POST` | `/permissoes/cadastrar` | `cadastrarpermissao` | Cadastra nova permissão |
-| `GET` | `/permissoes/listar` | `listartodaspermissoes` | Lista permissões paginado |
-| `GET` | `/permissoes/listar-especifico/{id}` | `listarpermissaoespecifica` | Detalhe de uma permissão |
-| `PUT` | `/permissoes/editar` | `editarpermissao` | Atualiza uma permissão |
-| `DELETE` | `/permissoes/deletar/{id}` | `deletarpermissao` | Remove uma permissão |
+| Método | Rota                                           | Permissão exigida | Descrição |
+|---|------------------------------------------------|---|---|
+| `POST` | `/auth/usuarios/logout`                        | — (só valida o JWT) | Revoga todos os refresh tokens |
+| `POST` | `/auth/usuarios/cadastrar`                     | `cadastrarusuario` | Cadastra novo usuário |
+| `GET` | `/auth/usuarios/listar`                        | `listartodosusuarios` | Lista usuários paginado |
+| `GET` | `/auth/usuarios/listar-especifico/{id}`        | `listarusuarioespecifico` | Detalhe de um usuário |
+| `GET` | `/auth/usuarios/clonar/{id}`                   | `clonarusuario` | Clona dados de um usuário |
+| `PUT` | `/auth/usuarios/editar`                        | `editarusuario` | Atualiza dados do usuário |
+| `DELETE` | `/auth/usuarios/deletar/{id}`                  | `deletarusuario` | Remove um usuário |
+| `POST` | `/auth/perfis/cadastrar`                       | `cadastrarperfil` | Cadastra novo perfil |
+| `GET` | `/auth/perfis/listar`                          | `listartodosperfis` | Lista perfis paginado |
+| `GET` | `/auth/perfis/listar-especifico/{id}`          | `listarperfilespecifico` | Detalhe de um perfil |
+| `GET` | `/auth/perfis/listar-usuarios-vinculados/{id}` | `listarusuariosvinculados` | Usuários do perfil |
+| `GET` | `/auth/perfis/clonar/{id}`                     | `clonarperfil` | Clona um perfil |
+| `PUT` | `/auth/perfis/editar`                          | `editarperfil` | Atualiza um perfil |
+| `DELETE` | `/auth/perfis/deletar/{id}`                    | `deletarperfil` | Remove um perfil |
+| `POST` | `/auth/permissoes/cadastrar`                   | `cadastrarpermissao` | Cadastra nova permissão |
+| `GET` | `/auth/permissoes/listar`                      | `listartodaspermissoes` | Lista permissões paginado |
+| `GET` | `/auth/permissoes/listar-especifico/{id}`      | `listarpermissaoespecifica` | Detalhe de uma permissão |
+| `PUT` | `/auth/permissoes/editar`                      | `editarpermissao` | Atualiza uma permissão |
+| `DELETE` | `/auth/permissoes/deletar/{id}`                | `deletarpermissao` | Remove uma permissão |
 
 ---
 
@@ -295,7 +296,7 @@ Algum perfil tem a permissão com nome == rota exigida?
 **1. Fazer login**
 
 ```http
-POST /api/usuarios/login
+POST /api/auth/usuarios/login
 Content-Type: application/json
 
 {
@@ -320,7 +321,7 @@ Resposta:
 **2. Usar o access token nas requisições protegidas**
 
 ```http
-GET /api/usuarios/listar
+GET /api/auth/usuarios/listar
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ```
 
@@ -335,7 +336,7 @@ O app mobile deve armazenar `accessToken` e `refreshToken` de forma segura (ex: 
 Quando o access token expirar (após `expiracaoAccessTokenSegundos` segundos), o cliente deve chamar `/refresh` antes de fazer novas requisições:
 
 ```http
-POST /api/usuarios/refresh
+POST /api/auth/usuarios/refresh
 Content-Type: application/json
 
 {
