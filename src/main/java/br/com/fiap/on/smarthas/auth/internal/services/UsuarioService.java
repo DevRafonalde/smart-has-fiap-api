@@ -35,6 +35,7 @@ public class UsuarioService {
     private final UsuarioPerfilRepository usuarioPerfilRepository;
     private final PerfilRepository perfilRepository;
     private final ModelMapper mapper;
+    private final VerificacaoEmailService verificacaoEmailService;
 
     @Value("${smarthas.security.perfil-padrao}")
     private String perfilPadrao;
@@ -100,6 +101,8 @@ public class UsuarioService {
         usuarioRecebido.setNomeCompleto(FormatarNomeMaiusculo.formatar(usuarioRecebido.getNomeCompleto()));
 
         UsuarioORM usuarioCadastrado = usuarioRepository.save(usuarioRecebido);
+
+        verificacaoEmailService.enviarCodigoVerificacao(usuarioCadastrado.getId());
 
         return vincularPerfisAoUsuario(usuarioPerfilDTO, usuarioCadastrado, usuarioCadastrado);
     }

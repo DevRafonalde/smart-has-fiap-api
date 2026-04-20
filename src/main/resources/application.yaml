@@ -10,6 +10,20 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        debug: false               # mude para true se precisar ver o log SMTP
+
   # ── Banco de Dados ────────────────────────────────────────
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:smarthas}
@@ -133,6 +147,10 @@ smarthas:
       deletion-deadline-hours: 72   # RN08: prazo de exclusão de dados
   security:
     perfil-padrao: padrao
+
+  email:
+    verificacao:
+      expiracao-minutos: ${EMAIL_VERIFICACAO_EXPIRACAO:15}
 
 # ── Actuator / Observabilidade ────────────────────────────────
 management:

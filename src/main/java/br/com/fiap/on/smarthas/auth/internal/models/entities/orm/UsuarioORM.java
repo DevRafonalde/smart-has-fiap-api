@@ -31,6 +31,9 @@ public class UsuarioORM {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "emailVerificado")
+    private boolean emailVerificado = false;
+
     @Column(name = "senhaAtualizada")
     private Boolean senhaAtualizada;
 

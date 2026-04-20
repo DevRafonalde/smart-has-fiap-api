@@ -10,4 +10,5 @@ public class SmartHasApplication {
 	}
 
 	// TODO Fazer verificação de e-mail
+	// TODO Fazer reset de senha
 }

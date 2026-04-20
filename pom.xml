@@ -145,6 +145,16 @@
         </dependency>
 
         <!-- ═══════════════════════════════════════════════
+             E-MAIL
+             ═══════════════════════════════════════════════ -->
+
+        <!-- Spring Mail — envio de e-mails via SMTP (Gmail, SendGrid etc.) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- ═══════════════════════════════════════════════
              DOCUMENTAÇÃO — Swagger / OpenAPI
              springdoc 3.x é a linha compatível com Boot 4.x
              ═══════════════════════════════════════════════ -->
