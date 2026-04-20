@@ -1,5 +1,6 @@
 package br.com.fiap.on.smarthas.auth.internal.models.entities.dto;
 
+import br.com.fiap.on.smarthas.shared.annotations.CPFValido;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ public class UsuarioDTO {
     private Integer id;
 
     @NotBlank(message = "Insira um CPF")
+    @CPFValido
     private String cpf;
 
     @NotBlank(message = "Insira o nome completo do usuário")

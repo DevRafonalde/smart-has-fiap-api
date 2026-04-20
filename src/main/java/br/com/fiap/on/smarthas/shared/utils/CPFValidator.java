@@ -1,17 +1,33 @@
 package br.com.fiap.on.smarthas.shared.utils;
 
+import br.com.fiap.on.smarthas.shared.annotations.CPFValido;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
 import java.util.InputMismatchException;
 
-public class ValidarCPF {
-    public static boolean validar(String CPF) {
+public class CPFValidator implements ConstraintValidator<CPFValido, String> {
+
+    @Override
+    public boolean isValid(String cpf, ConstraintValidatorContext context) {
+
+        if (cpf == null || cpf.isBlank()) {
+            return true; // deixa @NotNull cuidar disso
+        }
+
+        return validar(cpf);
+    }
+
+    private boolean validar(String cpf) {
+        cpf = cpf.replaceAll("[^\\d]", "");
         // considera-se erro CPF"s formados por uma sequencia de numeros iguais
-        if (CPF.equals("00000000000") ||
-                CPF.equals("11111111111") ||
-                CPF.equals("22222222222") || CPF.equals("33333333333") ||
-                CPF.equals("44444444444") || CPF.equals("55555555555") ||
-                CPF.equals("66666666666") || CPF.equals("77777777777") ||
-                CPF.equals("88888888888") || CPF.equals("99999999999") ||
-                (CPF.length() != 11))
+        if (cpf.equals("00000000000") ||
+                cpf.equals("11111111111") ||
+                cpf.equals("22222222222") || cpf.equals("33333333333") ||
+                cpf.equals("44444444444") || cpf.equals("55555555555") ||
+                cpf.equals("66666666666") || cpf.equals("77777777777") ||
+                cpf.equals("88888888888") || cpf.equals("99999999999") ||
+                (cpf.length() != 11))
             return(false);
 
         char dig10, dig11;
@@ -26,7 +42,7 @@ public class ValidarCPF {
                 // converte o i-esimo caractere do CPF em um numero:
                 // por exemplo, transforma o caractere "0" no inteiro 0
                 // (48 eh a posicao de "0" na tabela ASCII)
-                num = (int)(CPF.charAt(i) - 48);
+                num = (int)(cpf.charAt(i) - 48);
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -40,7 +56,7 @@ public class ValidarCPF {
             sm = 0;
             peso = 11;
             for(i=0; i<10; i++) {
-                num = (int)(CPF.charAt(i) - 48);
+                num = (int)(cpf.charAt(i) - 48);
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -51,14 +67,9 @@ public class ValidarCPF {
             else dig11 = (char)(r + 48);
 
             // Verifica se os digitos calculados conferem com os digitos informados.
-            return (dig10 == CPF.charAt(9)) && (dig11 == CPF.charAt(10));
+            return (dig10 == cpf.charAt(9)) && (dig11 == cpf.charAt(10));
         } catch (InputMismatchException erro) {
             return(false);
         }
-    }
-
-    public static String imprimeCPF(String CPF) {
-        return(CPF.substring(0, 3) + "." + CPF.substring(3, 6) + "." +
-                CPF.substring(6, 9) + "-" + CPF.substring(9, 11));
     }
 }

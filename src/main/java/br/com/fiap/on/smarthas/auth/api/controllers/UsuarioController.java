@@ -28,14 +28,14 @@ public class UsuarioController {
 
     @PostMapping("/cadastrar")
     @Permissao(rota = "cadastrarusuario")
-    public ResponseEntity<UsuarioPerfilDTO> cadastrarUsuario(@RequestBody UsuarioPerfilDTO usuarioPerfilRecebido) {
+    public ResponseEntity<UsuarioPerfilDTO> cadastrarUsuario(@Valid @RequestBody UsuarioPerfilDTO usuarioPerfilRecebido) {
         UsuarioPerfilDTO usuarioCadastrado = usuarioService.novoUsuario(usuarioPerfilRecebido);
 
         return new ResponseEntity<>(usuarioCadastrado, HttpStatus.OK);
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<UsuarioPerfilDTO> autoRegistroUsuario(@RequestBody UsuarioPerfilDTO usuarioPerfilRecebido) {
+    public ResponseEntity<UsuarioPerfilDTO> autoRegistroUsuario(@Valid @RequestBody UsuarioPerfilDTO usuarioPerfilRecebido) {
         UsuarioPerfilDTO usuarioCadastrado = usuarioService.novoUsuario(usuarioPerfilRecebido);
 
         return new ResponseEntity<>(usuarioCadastrado, HttpStatus.OK);
@@ -75,7 +75,7 @@ public class UsuarioController {
 
     @PutMapping("/editar")
     @Permissao(rota = "editarusuario")
-    public ResponseEntity<UsuarioPerfilDTO> editarUsuario(@RequestBody @Valid UsuarioPerfilDTO modeloCadastroUsuarioPerfil) {
+    public ResponseEntity<UsuarioPerfilDTO> editarUsuario(@Valid @RequestBody UsuarioPerfilDTO modeloCadastroUsuarioPerfil) {
         UsuarioPerfilDTO usuarioEditado = usuarioService.editar(modeloCadastroUsuarioPerfil);
 
         return new ResponseEntity<>(usuarioEditado, HttpStatus.OK);
@@ -102,9 +102,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<RefreshTokenResponseDTO> refresh(
-            @Valid @RequestBody RefreshTokenRequestDTO request
-    ) {
+    public ResponseEntity<RefreshTokenResponseDTO> refresh(@Valid @RequestBody RefreshTokenRequestDTO request) {
         // Valida o refresh token recebido (lança exceção se inválido/expirado)
         RefreshTokenORM refreshTokenValido = refreshTokenService.validar(request.getRefreshToken());
 

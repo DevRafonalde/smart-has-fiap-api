@@ -11,10 +11,8 @@ import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioPerfilRe
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioRepository;
 import br.com.fiap.on.smarthas.config.PasswordUtil;
 import br.com.fiap.on.smarthas.shared.exceptions.AtributoJaUtilizadoException;
-import br.com.fiap.on.smarthas.shared.exceptions.CPFInvalidoException;
 import br.com.fiap.on.smarthas.shared.exceptions.ElementoNaoEncontradoException;
 import br.com.fiap.on.smarthas.shared.utils.FormatarNomeMaiusculo;
-import br.com.fiap.on.smarthas.shared.utils.ValidarCPF;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
@@ -91,10 +89,6 @@ public class UsuarioService {
             throw new AtributoJaUtilizadoException("Nome de Usuário já está sendo utilizado");
         }
 
-        if (ValidarCPF.validar(usuarioPerfilDTO.getUsuario().getCpf())) {
-            throw new CPFInvalidoException("O CPF informado não é válido");
-        }
-
         UsuarioORM usuarioRecebido = mapper.map(usuarioPerfilDTO.getUsuario(), UsuarioORM.class);
         usuarioRecebido.setSenhaUser(PasswordUtil.hashPassword(usuarioRecebido.getSenhaUser()));
         usuarioRecebido.setNomeAmigavel(FormatarNomeMaiusculo.formatar(usuarioRecebido.getNomeAmigavel()));
@@ -107,10 +101,6 @@ public class UsuarioService {
 
     public UsuarioPerfilDTO editar(UsuarioPerfilDTO usuarioPerfilDTO) {
         UsuarioORM usuarioRecebido = mapper.map(usuarioPerfilDTO.getUsuario(), UsuarioORM.class);
-
-        if (ValidarCPF.validar(usuarioRecebido.getCpf())) {
-            throw new CPFInvalidoException("O CPF informado não é válido");
-        }
 
         UsuarioORM usuarioBanco = usuarioRepository.findById(usuarioRecebido.getId())
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado no banco de dados"));
