@@ -6,64 +6,170 @@ import br.com.fiap.on.smarthas.auth.api.controllers.UsuarioController;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.orm.*;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.*;
 import br.com.fiap.on.smarthas.config.PasswordUtil;
+import br.com.fiap.on.smarthas.shared.annotations.Permissao;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class InicializacaoService {
-    private PerfilRepository perfilRepository;
-    private UsuarioRepository usuarioRepository;
-    private PermissaoRepository permissaoRepository;
-    private PerfilPermissaoRepository perfilPermissaoRepository;
-    private UsuarioPerfilRepository usuarioPerfilRepository;
+    private final PerfilRepository perfilRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PermissaoRepository permissaoRepository;
+    private final PerfilPermissaoRepository perfilPermissaoRepository;
+    private final UsuarioPerfilRepository usuarioPerfilRepository;
 
+    // Controllers cujos métodos anotados com @Permissao serão escaneados
+    private static final List<Class<?>> CONTROLLERS = List.of(
+            PerfilController.class,
+            PermissaoController.class,
+            UsuarioController.class
+    );
+
+    @Transactional
     public void startSeeder() {
-        if (Objects.nonNull(usuarioRepository.findByNomeUser("admin"))) {
+        // Idempotência: verifica se as permissões já foram criadas
+        // Usar a contagem de permissões é mais robusto do que checar entidades
+        // individuais — se as permissões existem, o seeder já rodou com sucesso
+        long totalPermissoesEsperadas = contarPermissoesEsperadas();
+        long totalPermissoesBanco = permissaoRepository.count();
+
+        if (totalPermissoesBanco >= totalPermissoesEsperadas) {
+            log.info("Seeder já executado. Pulando inicialização.");
             return;
         }
 
-        List<PermissaoORM> permissoesCriadas = criarPermissoes();
+        log.info("Iniciando seeder de autenticação...");
 
-        configurarUsuarioAdmin(permissoesCriadas);
-        configurarPerfilPadrao(permissoesCriadas);
+        List<PermissaoORM> todasPermissoes = criarPermissoes();
+        configurarAdmin(todasPermissoes);
+        configurarPerfilPadrao(todasPermissoes);
+
+        log.info("Seeder concluído. {} permissões criadas.", todasPermissoes.size());
     }
 
-    private void configurarUsuarioAdmin(List<PermissaoORM> permissoesCriadas) {
-        UsuarioORM usuarioCriado = criarUsuarioAdmin();
-        PerfilORM perfilAdmin = criarPerfilAdmin();
-        vincularPerfisPermissoes(perfilAdmin, permissoesCriadas);
-        vincularUsuariosPerfis(usuarioCriado, perfilAdmin);
-    }
+    // ─── Criação de permissões ─────────────────────────────────────────────────
 
-    private void configurarPerfilPadrao(List<PermissaoORM> permissoesCriadas) {
-        PerfilORM perfilPadrao = criarPerfilPadrao();
+    // Lê a annotation @Permissao de cada método dos controllers registrados
+    // Garante que o nome da permissão é sempre o valor de rota="..." da annotation,
+    // não o nome do método Java — evitando quebras por renomeação de métodos
+    private List<PermissaoORM> criarPermissoes() {
+        List<String> rotasUnicas = extrairRotasDosControllers();
 
-        // TODO Trocar o Controller abaixo pelos controllers da aplicação mesmo
-        List<String> permissoesPerfil = Arrays.stream(PerfilController.class.getDeclaredMethods())
-                .map(Method::getName)
-                .map(String::toLowerCase)
-                .toList();
-
-        List<String> permissoesNecessarias = new ArrayList<>();
-        permissoesNecessarias.addAll(permissoesPerfil);
-
-        List<PermissaoORM> permissoesPadrao = new ArrayList<>();
-        for (PermissaoORM permissao : permissoesCriadas) {
-            if (permissoesNecessarias.contains(permissao.getNome())) {
-                permissoesPadrao.add(permissao);
+        List<PermissaoORM> permissoesCriadas = new ArrayList<>();
+        for (String rota : rotasUnicas) {
+            // Evita duplicar permissões caso o seeder seja chamado mais de uma vez
+            // em um cenário de migração parcial
+            boolean jaExiste = permissaoRepository.findByNome(rota).isPresent();
+            if (jaExiste) {
+                log.debug("Permissão '{}' já existe, pulando.", rota);
+                permissoesCriadas.add(permissaoRepository.findByNome(rota).get());
+                continue;
             }
+
+            PermissaoORM permissao = new PermissaoORM();
+            permissao.setNome(rota);
+            permissao.setDescricao("Permissão gerada automaticamente pelo seeder");
+            permissao.setAtivo(true);
+
+            permissoesCriadas.add(permissaoRepository.save(permissao));
+            log.debug("Permissão criada: '{}'", rota);
         }
 
-        vincularPerfisPermissoes(perfilPadrao, permissoesPadrao);
+        return permissoesCriadas;
     }
+
+    // Escaneia os controllers e extrai o valor de rota="..." de cada @Permissao
+    // Já filtra duplicatas com distinct()
+    private List<String> extrairRotasDosControllers() {
+        return CONTROLLERS.stream()
+                .flatMap(controller -> Arrays.stream(controller.getDeclaredMethods()))
+                .map(method -> method.getAnnotation(Permissao.class))
+                .filter(Objects::nonNull)                      // ignora métodos sem @Permissao
+                .map(Permissao::rota)
+                .map(String::toLowerCase)
+                .distinct()                                    // remove duplicatas entre controllers
+                .sorted()                                      // ordem alfabética para log legível
+                .toList();
+    }
+
+    // Conta quantas permissões únicas são esperadas — usado na verificação de idempotência
+    private long contarPermissoesEsperadas() {
+        return extrairRotasDosControllers().size();
+    }
+
+    // ─── Configuração do admin ─────────────────────────────────────────────────
+
+    private void configurarAdmin(List<PermissaoORM> todasPermissoes) {
+        if (Objects.nonNull(usuarioRepository.findByNomeUser("admin"))) {
+            log.info("Usuário admin já existe. Pulando.");
+            return;
+        }
+
+        UsuarioORM admin = criarUsuarioAdmin();
+        PerfilORM perfilAdmin = criarPerfil("Administrador de Sistemas", "admin",
+                "Perfil com acesso total ao sistema");
+
+        // Admin recebe TODAS as permissões
+        vincularPermissoesAoPerfil(perfilAdmin, todasPermissoes);
+        vincularUsuarioAoPerfil(admin, perfilAdmin);
+
+        log.info("Usuário admin criado e configurado com {} permissões.", todasPermissoes.size());
+    }
+
+    // ─── Controllers acessíveis pelo perfil padrão ────────────────────────────
+    // Para dar acesso a um novo controller ao perfil padrão, basta adicioná-lo aqui.
+    // Permissões cujo nome começa com "admin" são sempre excluídas,
+    // independente do controller listado.
+    private static final List<Class<?>> CONTROLLERS_PADRAO = List.of(
+            PerfilController.class,
+            PermissaoController.class,
+            UsuarioController.class
+    );
+
+    // ─── Configuração do perfil padrão ─────────────────────────────────────────
+
+    private void configurarPerfilPadrao(List<PermissaoORM> todasPermissoes) {
+        if (Objects.nonNull(perfilRepository.findByMnemonico("padrao"))) {
+            log.info("Perfil padrão já existe. Pulando.");
+            return;
+        }
+
+        PerfilORM perfilPadrao = criarPerfil("Usuário Padrão", "padrao",
+                "Perfil com permissões padrões do sistema");
+
+        // Extrai as rotas permitidas a partir dos controllers definidos em CONTROLLERS_PADRAO,
+        // excluindo qualquer permissão cujo nome comece com "admin"
+        List<String> rotasPermitidas = CONTROLLERS_PADRAO.stream()
+                .flatMap(controller -> Arrays.stream(controller.getDeclaredMethods()))
+                .map(method -> method.getAnnotation(Permissao.class))
+                .filter(Objects::nonNull)
+                .map(Permissao::rota)
+                .map(String::toLowerCase)
+                .filter(rota -> !rota.startsWith("admin"))
+                .distinct()
+                .toList();
+
+        // Cruza com as permissões já persistidas no banco para pegar os ORM corretos
+        List<PermissaoORM> permissoesPadrao = todasPermissoes.stream()
+                .filter(p -> rotasPermitidas.contains(p.getNome()))
+                .toList();
+
+        vincularPermissoesAoPerfil(perfilPadrao, permissoesPadrao);
+
+        log.info("Perfil padrão criado com {} permissões.", permissoesPadrao.size());
+    }
+
+    // ─── Métodos auxiliares ────────────────────────────────────────────────────
 
     private UsuarioORM criarUsuarioAdmin() {
         UsuarioORM admin = new UsuarioORM();
@@ -72,82 +178,34 @@ public class InicializacaoService {
         admin.setNomeUser("admin");
         admin.setSenhaUser(PasswordUtil.hashPassword("123456"));
         admin.setSenhaAtualizada(true);
-
+        admin.setAtivo(true);
         return usuarioRepository.save(admin);
     }
 
-    private PerfilORM criarPerfilAdmin() {
-        PerfilORM admin = new PerfilORM();
-        admin.setNome("Administrador de Sistemas");
-        admin.setMnemonico("admin");
-        admin.setDescricao("Perfil com todas as permissões do sistema");
-
-        return perfilRepository.save(admin);
+    private PerfilORM criarPerfil(String nome, String mnemonico, String descricao) {
+        PerfilORM perfil = new PerfilORM();
+        perfil.setNome(nome);
+        perfil.setMnemonico(mnemonico);
+        perfil.setDescricao(descricao);
+        perfil.setAtivo(true);
+        return perfilRepository.save(perfil);
     }
 
-    private PerfilORM criarPerfilPadrao() {
-        PerfilORM padrao = new PerfilORM();
-        padrao.setNome("Perfil de Usuário Padrão");
-        padrao.setMnemonico("padrao");
-        padrao.setDescricao("Perfil com todas as permissões padrões do sistema");
-
-        return perfilRepository.save(padrao);
-    }
-
-    // Esse método precisa criar TODAS as permissões da aplicação
-    private List<PermissaoORM> criarPermissoes() {
-        List<PermissaoORM> permissoesCriadas = new ArrayList<>();
-        List<String> permissoesPerfil = Arrays.stream(PerfilController.class.getDeclaredMethods())
-                .map(Method::getName)
-                .map(String::toLowerCase)
-                .toList();
-
-        List<String> permissoesUsuarios = Arrays.stream(UsuarioController.class.getDeclaredMethods())
-                .map(Method::getName)
-                .map(String::toLowerCase)
-                .toList();
-
-        List<String> permissoesPermissoes = Arrays.stream(PermissaoController.class.getDeclaredMethods())
-                .map(Method::getName)
-                .map(String::toLowerCase)
-                .toList();
-
-        List<String> todasPermissoes = new ArrayList<>();
-        todasPermissoes.addAll(permissoesPerfil);
-        todasPermissoes.addAll(permissoesUsuarios);
-        todasPermissoes.addAll(permissoesPermissoes);
-
-        int contadorId = 1;
-        for (String nomePermissao : todasPermissoes) {
-            PermissaoORM novaPermissao = new PermissaoORM();
-            novaPermissao.setId(contadorId++);
-            novaPermissao.setNome(nomePermissao);
-
-            PermissaoORM permissaoCriada = permissaoRepository.save(novaPermissao);
-
-            permissoesCriadas.add(permissaoCriada);
-        }
-
-        return permissoesCriadas;
-    }
-
-    private void vincularPerfisPermissoes(PerfilORM perfilCriado, List<PermissaoORM> permissoesCriadas) {
-        for (PermissaoORM permissao : permissoesCriadas) {
-            PerfilPermissaoORM perfilPermissao = new PerfilPermissaoORM();
-            perfilPermissao.setPerfil(perfilCriado);
-            perfilPermissao.setPermissao(permissao);
-            perfilPermissao.setDataHora(LocalDateTime.now());
-
-            perfilPermissaoRepository.save(perfilPermissao);
+    private void vincularPermissoesAoPerfil(PerfilORM perfil, List<PermissaoORM> permissoes) {
+        for (PermissaoORM permissao : permissoes) {
+            PerfilPermissaoORM vinculo = new PerfilPermissaoORM();
+            vinculo.setPerfil(perfil);
+            vinculo.setPermissao(permissao);
+            vinculo.setDataHora(LocalDateTime.now());
+            perfilPermissaoRepository.save(vinculo);
         }
     }
 
-    private void vincularUsuariosPerfis(UsuarioORM usuarioCriado, PerfilORM perfilCriado) {
-        UsuarioPerfilORM usuarioPerfil = new UsuarioPerfilORM();
-        usuarioPerfil.setUsuario(usuarioCriado);
-        usuarioPerfil.setPerfil(perfilCriado);
-        usuarioPerfil.setDataHora(LocalDateTime.now());
-
-        usuarioPerfilRepository.save(usuarioPerfil);
+    private void vincularUsuarioAoPerfil(UsuarioORM usuario, PerfilORM perfil) {
+        UsuarioPerfilORM vinculo = new UsuarioPerfilORM();
+        vinculo.setUsuario(usuario);
+        vinculo.setPerfil(perfil);
+        vinculo.setDataHora(LocalDateTime.now());
+        usuarioPerfilRepository.save(vinculo);
     }
 }
