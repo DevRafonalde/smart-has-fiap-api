@@ -60,8 +60,7 @@ public class InicializacaoService {
     // ─── Criação de permissões ─────────────────────────────────────────────────
 
     // Lê a annotation @Permissao de cada método dos controllers registrados
-    // Garante que o nome da permissão é sempre o valor de rota="..." da annotation,
-    // não o nome do método Java — evitando quebras por renomeação de métodos
+    // Garante que o nome da permissão é sempre o valor de rota="..." da annotation
     private List<PermissaoORM> criarPermissoes() {
         List<String> rotasUnicas = extrairRotasDosControllers();
 

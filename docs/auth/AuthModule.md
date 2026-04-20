@@ -10,16 +10,16 @@ Documentação técnica do módulo de autenticação, autorização e controle d
 - [Estrutura de Pacotes](#estrutura-de-pacotes)
 - [Modelo de Dados](#modelo-de-dados)
 - [Como Funciona](#como-funciona)
-    - [Autenticação (Login)](#autenticação-login)
-    - [Access Token](#access-token)
-    - [Refresh Token](#refresh-token)
-    - [Logout](#logout)
-    - [Controle de Permissões](#controle-de-permissões)
+  - [Autenticação (Login)](#autenticação-login)
+  - [Access Token](#access-token)
+  - [Refresh Token](#refresh-token)
+  - [Logout](#logout)
+  - [Controle de Permissões](#controle-de-permissões)
 - [Endpoints](#endpoints)
 - [Como Utilizar](#como-utilizar)
-    - [Fluxo completo de autenticação](#fluxo-completo-de-autenticação)
-    - [Renovando o token](#renovando-o-token)
-    - [Protegendo um endpoint](#protegendo-um-endpoint)
+  - [Fluxo completo de autenticação](#fluxo-completo-de-autenticação)
+  - [Renovando o token](#renovando-o-token)
+  - [Protegendo um endpoint](#protegendo-um-endpoint)
 - [Configuração](#configuração)
 - [Erros e Exceções](#erros-e-exceções)
 
@@ -360,6 +360,154 @@ Se o refresh token também estiver expirado, a API retorna `401` e o usuário pr
 
 ---
 
+### Cadastro de usuário pelo próprio cidadão
+
+O endpoint `/registrar` é público e não exige token. O usuário se cadastra com seus dados básicos, sem vínculo a perfil — o perfil padrão é atribuído automaticamente pelo sistema.
+
+O CPF é validado pelo algoritmo oficial dos dígitos verificadores antes de persistir. CPFs com todos os dígitos iguais (ex: `11111111111`) ou com dígitos verificadores incorretos são rejeitados com `400 Bad Request`.
+
+```http
+POST /api/auth/usuarios/registrar
+Content-Type: application/json
+
+{
+  "cpf": "12345678909",
+  "nomeCompleto": "João da Silva",
+  "nomeAmigavel": "João",
+  "nomeUser": "joao.silva",
+  "senhaUser": "Senha@123"
+}
+```
+
+Resposta:
+
+```json
+{
+  "usuario": {
+    "id": 42,
+    "cpf": "12345678909",
+    "nomeCompleto": "João Da Silva",
+    "nomeAmigavel": "João",
+    "nomeUser": "joao.silva",
+    "senhaUser": null,
+    "ativo": true
+  },
+  "perfisUsuario": [
+    {
+      "id": 2,
+      "nome": "Usuário Padrão",
+      "descricao": "Perfil com permissões padrões do sistema",
+      "ativo": true
+    }
+  ]
+}
+```
+
+> A senha nunca é retornada nas respostas — o campo `senhaUser` sempre virá `null`.
+
+---
+
+### Cadastro de usuário por um administrador
+
+O endpoint `/cadastrar` exige token e a permissão `cadastrarusuario`. Permite ao admin criar um usuário já vinculando-o a um ou mais perfis específicos. A validação de CPF também é aplicada neste endpoint.
+
+```http
+POST /api/auth/usuarios/cadastrar
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+Content-Type: application/json
+
+{
+  "usuario": {
+    "cpf": "98765432100",
+    "nomeCompleto": "Maria Aparecida",
+    "nomeAmigavel": "Maria",
+    "nomeUser": "maria.aparecida",
+    "senhaUser": "Senha@456"
+  },
+  "perfisUsuario": [
+    {
+      "id": 1,
+      "nome": "Administrador de Sistemas",
+      "descricao": "Perfil com acesso total ao sistema",
+      "ativo": true
+    }
+  ]
+}
+```
+
+Resposta:
+
+```json
+{
+  "usuario": {
+    "id": 43,
+    "cpf": "98765432100",
+    "nomeCompleto": "Maria Aparecida",
+    "nomeAmigavel": "Maria",
+    "nomeUser": "maria.aparecida",
+    "senhaUser": null,
+    "ativo": true
+  },
+  "perfisUsuario": [
+    {
+      "id": 1,
+      "nome": "Administrador de Sistemas",
+      "descricao": "Perfil com acesso total ao sistema",
+      "ativo": true
+    }
+  ]
+}
+```
+
+---
+
+### Cadastro de perfil
+
+```http
+POST /api/auth/perfis/cadastrar
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+Content-Type: application/json
+
+{
+  "perfil": {
+    "nome": "Tutor Voluntário",
+    "descricao": "Perfil para tutores da plataforma",
+    "ativo": true
+  },
+  "permissoes": [
+    {
+      "id": 3,
+      "nome": "listartodosusuarios",
+      "descricao": "Permissão gerada automaticamente pelo seeder",
+      "ativo": true
+    }
+  ]
+}
+```
+
+Resposta:
+
+```json
+{
+  "perfil": {
+    "id": 5,
+    "nome": "Tutor Voluntário",
+    "descricao": "Perfil para tutores da plataforma",
+    "ativo": true
+  },
+  "permissoes": [
+    {
+      "id": 3,
+      "nome": "listartodosusuarios",
+      "descricao": "Permissão gerada automaticamente pelo seeder",
+      "ativo": true
+    }
+  ]
+}
+```
+
+---
+
 ### Protegendo um endpoint
 
 Para proteger qualquer método de controller, adicione `@Permissao` com o nome da rota:
@@ -421,4 +569,15 @@ JWT_REFRESH=604800
 | Refresh token já revogado | `401` | `"Refresh token inválido"` |
 | Usuário sem permissão para a rota | `403` | `"Usuário não possui a permissão necessária para esta função"` |
 | Recurso não encontrado | `404` | `"[Entidade] não encontrado no banco de dados"` |
+| CPF inválido (dígitos verificadores ou sequência repetida) | `400` | `"[mensagem descritiva do CPF inválido]"` |
 | Atributo já em uso (ex: nomeUser) | `409` | `"Nome de Usuário já está sendo utilizado"` |
+
+### Regras de validação do CPF
+
+O CPF deve ser enviado como string de **11 dígitos numéricos**, sem pontos ou hífen (ex: `"12345678909"`). A validação rejeita:
+
+- CPFs com menos ou mais de 11 caracteres
+- CPFs formados por dígitos repetidos (`"00000000000"`, `"11111111111"` etc.)
+- CPFs cujos dígitos verificadores não conferem com o algoritmo oficial
+
+A validação ocorre em `novoUsuario()` e `editar()` no `UsuarioService`, lançando `CPFInvalidoException` (`400 Bad Request`) antes de qualquer persistência.

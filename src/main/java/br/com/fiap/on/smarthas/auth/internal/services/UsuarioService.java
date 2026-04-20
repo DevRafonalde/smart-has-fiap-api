@@ -11,8 +11,10 @@ import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioPerfilRe
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioRepository;
 import br.com.fiap.on.smarthas.config.PasswordUtil;
 import br.com.fiap.on.smarthas.shared.exceptions.AtributoJaUtilizadoException;
+import br.com.fiap.on.smarthas.shared.exceptions.CPFInvalidoException;
 import br.com.fiap.on.smarthas.shared.exceptions.ElementoNaoEncontradoException;
 import br.com.fiap.on.smarthas.shared.utils.FormatarNomeMaiusculo;
+import br.com.fiap.on.smarthas.shared.utils.ValidarCPF;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.modelmapper.ModelMapper;
@@ -89,6 +91,10 @@ public class UsuarioService {
             throw new AtributoJaUtilizadoException("Nome de Usuário já está sendo utilizado");
         }
 
+        if (ValidarCPF.validar(usuarioPerfilDTO.getUsuario().getCpf())) {
+            throw new CPFInvalidoException("O CPF informado não é válido");
+        }
+
         UsuarioORM usuarioRecebido = mapper.map(usuarioPerfilDTO.getUsuario(), UsuarioORM.class);
         usuarioRecebido.setSenhaUser(PasswordUtil.hashPassword(usuarioRecebido.getSenhaUser()));
         usuarioRecebido.setNomeAmigavel(FormatarNomeMaiusculo.formatar(usuarioRecebido.getNomeAmigavel()));
@@ -99,8 +105,12 @@ public class UsuarioService {
         return vincularPerfisAoUsuario(usuarioPerfilDTO, usuarioCadastrado, usuarioCadastrado);
     }
 
-    public UsuarioPerfilDTO editar(UsuarioPerfilDTO modeloCadastroUsuarioPerfil) {
-        UsuarioORM usuarioRecebido = mapper.map(modeloCadastroUsuarioPerfil.getUsuario(), UsuarioORM.class);
+    public UsuarioPerfilDTO editar(UsuarioPerfilDTO usuarioPerfilDTO) {
+        UsuarioORM usuarioRecebido = mapper.map(usuarioPerfilDTO.getUsuario(), UsuarioORM.class);
+
+        if (ValidarCPF.validar(usuarioRecebido.getCpf())) {
+            throw new CPFInvalidoException("O CPF informado não é válido");
+        }
 
         UsuarioORM usuarioBanco = usuarioRepository.findById(usuarioRecebido.getId())
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado no banco de dados"));
@@ -121,10 +131,9 @@ public class UsuarioService {
         List<UsuarioPerfilORM> registrosExistentes = usuarioPerfilRepository.findByUsuario(usuarioRecebido);
         usuarioPerfilRepository.deleteAll(registrosExistentes);
 
-        return vincularPerfisAoUsuario(modeloCadastroUsuarioPerfil, usuarioRecebido, usuarioSalvo);
+        return vincularPerfisAoUsuario(usuarioPerfilDTO, usuarioRecebido, usuarioSalvo);
     }
 
-    // TODO Fazer um genérico para quando não mandar perfil nenhum, ele vincular a um usuário comum
     // TODO Arrumar o readme pra colocar os JSON certos
 
     @NonNull

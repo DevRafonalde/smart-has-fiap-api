@@ -14,6 +14,9 @@ import lombok.ToString;
 public class UsuarioDTO {
     private Integer id;
 
+    @NotBlank(message = "Insira um CPF")
+    private String cpf;
+
     @NotBlank(message = "Insira o nome completo do usuário")
     private String nomeCompleto;
 
