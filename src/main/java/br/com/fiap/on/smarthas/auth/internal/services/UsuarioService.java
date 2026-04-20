@@ -1,5 +1,6 @@
 package br.com.fiap.on.smarthas.auth.internal.services;
 
+import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.LoginRequestDTO;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.PerfilDTO;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.UsuarioDTO;
 import br.com.fiap.on.smarthas.auth.internal.models.entities.dto.UsuarioPerfilDTO;
@@ -10,6 +11,7 @@ import br.com.fiap.on.smarthas.auth.internal.models.repositories.PerfilRepositor
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioPerfilRepository;
 import br.com.fiap.on.smarthas.auth.internal.models.repositories.UsuarioRepository;
 import br.com.fiap.on.smarthas.config.PasswordUtil;
+import br.com.fiap.on.smarthas.shared.exceptions.AcessoNaoAutorizadoException;
 import br.com.fiap.on.smarthas.shared.exceptions.AtributoJaUtilizadoException;
 import br.com.fiap.on.smarthas.shared.exceptions.ElementoNaoEncontradoException;
 import br.com.fiap.on.smarthas.shared.utils.FormatarNomeMaiusculo;
@@ -82,11 +84,14 @@ public class UsuarioService {
     }
 
     public UsuarioPerfilDTO novoUsuario(UsuarioPerfilDTO usuarioPerfilDTO) {
-        System.out.println(usuarioPerfilDTO);
-        UsuarioORM usuarioExistente = usuarioRepository.findByNomeUser(usuarioPerfilDTO.getUsuario().getNomeUser());
-
+        UsuarioORM usuarioExistente = usuarioRepository.findByCpf(usuarioPerfilDTO.getUsuario().getCpf());
         if (Objects.nonNull(usuarioExistente)) {
-            throw new AtributoJaUtilizadoException("Nome de Usuário já está sendo utilizado");
+            throw new AtributoJaUtilizadoException("CPF já está cadastrado");
+        }
+
+        UsuarioORM usuarioExistente2 = usuarioRepository.findByEmail(usuarioPerfilDTO.getUsuario().getEmail());
+        if (Objects.nonNull(usuarioExistente2)) {
+            throw new AtributoJaUtilizadoException("E-mail já está cadastrado");
         }
 
         UsuarioORM usuarioRecebido = mapper.map(usuarioPerfilDTO.getUsuario(), UsuarioORM.class);
@@ -105,10 +110,10 @@ public class UsuarioService {
         UsuarioORM usuarioBanco = usuarioRepository.findById(usuarioRecebido.getId())
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado no banco de dados"));
 
-        if (!usuarioRecebido.getNomeUser().equalsIgnoreCase(usuarioBanco.getNomeUser())) {
-            UsuarioORM usuarioExistente = usuarioRepository.findByNomeUser(usuarioRecebido.getNomeUser());
+        if (!usuarioRecebido.getEmail().equalsIgnoreCase(usuarioBanco.getEmail())) {
+            UsuarioORM usuarioExistente = usuarioRepository.findByEmail(usuarioRecebido.getEmail());
             if (Objects.nonNull(usuarioExistente)) {
-                throw new AtributoJaUtilizadoException("Nome de usuário já está sendo utilizado");
+                throw new AtributoJaUtilizadoException("E-mail já está sendo utilizado");
             }
         }
 
@@ -123,8 +128,6 @@ public class UsuarioService {
 
         return vincularPerfisAoUsuario(usuarioPerfilDTO, usuarioRecebido, usuarioSalvo);
     }
-
-    // TODO Arrumar o readme pra colocar os JSON certos
 
     @NonNull
     private UsuarioPerfilDTO vincularPerfisAoUsuario(
@@ -169,9 +172,17 @@ public class UsuarioService {
         );
     }
 
-    public UsuarioORM autenticar(String nomeUser, String senha) {
-        UsuarioORM usuarioEncontrado = usuarioRepository.findByNomeUser(nomeUser);
-        if (PasswordUtil.verificarSenha(senha, usuarioEncontrado.getSenhaUser())) {
+    public UsuarioORM autenticar(LoginRequestDTO loginRequest) {
+        UsuarioORM usuarioEncontrado;
+        if (!loginRequest.getCpf().isEmpty()) {
+            usuarioEncontrado = usuarioRepository.findByCpf(loginRequest.getCpf());
+        } else if (!loginRequest.getEmail().isEmpty()) {
+            usuarioEncontrado = usuarioRepository.findByEmail(loginRequest.getEmail());
+        } else {
+            throw new AcessoNaoAutorizadoException("Faça o login inserindo um e-mail ou um CPF");
+        }
+
+        if (PasswordUtil.verificarSenha(loginRequest.getSenha(), usuarioEncontrado.getSenhaUser())) {
             return usuarioEncontrado;
         }
         throw new ElementoNaoEncontradoException("Usuário ou senha inválidos");

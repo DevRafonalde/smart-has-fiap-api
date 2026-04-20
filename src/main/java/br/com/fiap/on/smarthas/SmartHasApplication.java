@@ -9,5 +9,5 @@ public class SmartHasApplication {
 		SpringApplication.run(SmartHasApplication.class, args);
 	}
 
-	// TODO 
+	// TODO Fazer verificação de e-mail
 }

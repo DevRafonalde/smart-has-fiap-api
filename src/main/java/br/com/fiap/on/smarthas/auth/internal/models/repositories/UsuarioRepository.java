@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface UsuarioRepository extends JpaRepository<UsuarioORM, Integer> {
     List<UsuarioORM> findByNomeAmigavelContaining(String nomeAmigavel);
-    UsuarioORM findByNomeUser(String nomeUser);
+    UsuarioORM findByEmail(String email);
+    UsuarioORM findByCpf(String cpf);
 }

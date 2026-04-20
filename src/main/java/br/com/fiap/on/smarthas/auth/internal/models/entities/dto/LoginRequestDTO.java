@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 public class LoginRequestDTO {
-    @NotBlank(message = "Nome de usuário é obrigatório")
-    private String nomeUser;
+    // Pode logar por e-mail ou por CPF
+    private String email;
+    private String cpf;
 
     @NotBlank(message = "Senha é obrigatória")
     private String senha;

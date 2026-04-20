@@ -83,7 +83,7 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
-        UsuarioORM usuario = usuarioService.autenticar(loginRequest.getNomeUser(), loginRequest.getSenha());
+        UsuarioORM usuario = usuarioService.autenticar(loginRequest);
 
         String accessToken = jwtService.gerarToken(usuario);
         RefreshTokenORM refreshToken = refreshTokenService.gerar(usuario);
@@ -91,7 +91,8 @@ public class UsuarioController {
         LoginResponseDTO response = new LoginResponseDTO(
                 usuario.getId(),
                 usuario.getNomeAmigavel(),
-                usuario.getNomeUser(),
+                usuario.getCpf(),
+                usuario.getEmail(),
                 accessToken,
                 refreshToken.getToken(),
                 jwtService.getExpiracaoSegundos()

@@ -25,11 +25,11 @@ public class UsuarioORM {
     @Column(name = "nomeAmigavel")
     private String nomeAmigavel;
 
-    @Column(name = "nomeUser")
-    private String nomeUser;
-
     @Column(name = "senhaUser")
     private String senhaUser;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "senhaAtualizada")
     private Boolean senhaAtualizada;

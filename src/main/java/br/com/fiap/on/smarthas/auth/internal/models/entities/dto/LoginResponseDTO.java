@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 public class LoginResponseDTO {
     private Integer id;
     private String nomeAmigavel;
-    private String nomeUser;
+    private String cpf;
+    private String email;
     private String accessToken;
     private String refreshToken;
     private Long expiracaoAccessTokenSegundos;
