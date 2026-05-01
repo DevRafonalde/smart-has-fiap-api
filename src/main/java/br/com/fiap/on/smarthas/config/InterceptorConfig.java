@@ -1,6 +1,6 @@
 package br.com.fiap.on.smarthas.config;
 
-import br.com.fiap.on.smarthas.auth.api.middlewares.PermissaoMiddleware;
+import br.com.fiap.on.smarthas.middlewares.PermissaoMiddleware;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -1,6 +1,6 @@
 package br.com.fiap.on.smarthas.config;
 
-import br.com.fiap.on.smarthas.auth.internal.services.InicializacaoService;
+import br.com.fiap.on.smarthas.services.InicializacaoService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
