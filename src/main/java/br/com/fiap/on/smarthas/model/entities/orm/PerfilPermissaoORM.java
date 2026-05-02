@@ -16,18 +16,18 @@ import java.time.LocalDateTime;
 public class PerfilPermissaoORM {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "idPerfil", referencedColumnName = "id")
+    @JoinColumn(name = "idPerfil", referencedColumnName = "id", nullable = false)
     private PerfilORM perfil;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "idPermissao", referencedColumnName = "id")
+    @JoinColumn(name = "idPermissao", referencedColumnName = "id", nullable = false)
     private PermissaoORM permissao;
 
-    @Column(name = "dataHora")
+    @Column(name = "dataHora", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataHora;
 }

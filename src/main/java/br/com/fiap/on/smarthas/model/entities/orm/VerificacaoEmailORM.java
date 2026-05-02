@@ -16,7 +16,7 @@ public class VerificacaoEmailORM {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,0 +1,28 @@
+package br.com.fiap.on.smarthas.model.entities.orm;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "t_tentativas_avaliacao")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class TentativaAvaliacaoORM {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
+    private Integer id;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "idAvaliacao", referencedColumnName = "id", nullable = false, updatable = false)
+    private AvaliacaoORM avaliacao;
+
+    @Column(name = "nota", nullable = false)
+    private Integer nota;
+
+    @Column(name = "aprovado", nullable = false)
+    private boolean aprovado;
+}

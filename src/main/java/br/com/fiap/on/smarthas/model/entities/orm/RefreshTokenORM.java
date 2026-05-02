@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class RefreshTokenORM {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)

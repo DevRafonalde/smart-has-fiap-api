@@ -6,21 +6,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "t_permissoes")
+@Table(name = "t_modulos")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class PermissaoORM {
+public class ModuloORM {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Integer id;
 
-    @Column(name = "nome", nullable = false)
-    private String nome;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "idCurso", referencedColumnName = "id", updatable = false, nullable = false)
+    private CursoORM curso;
+
+    @Column(name = "titulo", nullable = false)
+    private String titulo;
 
     @Column(name = "descricao", nullable = false)
     private String descricao;
+
+    @Column(name = "ordemConteudo", nullable = false)
+    private Integer ordem;
 
     @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;

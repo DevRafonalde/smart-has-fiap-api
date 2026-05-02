@@ -13,18 +13,18 @@ import lombok.NoArgsConstructor;
 public class PerfilORM {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Integer id;
 
-    @Column(name = "nome")
+    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "descricao")
+    @Column(name = "descricao", nullable = false)
     private String descricao;
 
-    @Column(name = "mnemonico")
+    @Column(name = "mnemonico", nullable = false)
     private String mnemonico;
 
-    @Column(name = "ativo")
+    @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;
 }

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class TokenResetSenhaORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)

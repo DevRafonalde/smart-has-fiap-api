@@ -13,30 +13,30 @@ import lombok.NoArgsConstructor;
 public class UsuarioORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Integer id;
 
-    @Column(name = "cpf")
+    @Column(name = "cpf", nullable = false, length = 11)
     private String cpf;
 
-    @Column(name = "nomeCompleto")
+    @Column(name = "nomeCompleto", nullable = false)
     private String nomeCompleto;
 
-    @Column(name = "nomeAmigavel")
+    @Column(name = "nomeAmigavel", nullable = false)
     private String nomeAmigavel;
 
-    @Column(name = "senhaUser")
+    @Column(name = "senhaUser", nullable = false)
     private String senhaUser;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "emailVerificado")
+    @Column(name = "emailVerificado", nullable = false)
     private boolean emailVerificado = false;
 
-    @Column(name = "senhaAtualizada")
-    private Boolean senhaAtualizada;
+    @Column(name = "senhaAtualizada", nullable = false)
+    private boolean senhaAtualizada =  false;
 
-    @Column(name = "ativo")
+    @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;
 }
