@@ -44,7 +44,7 @@ public class VerificacaoEmailService {
     // @Async garante que o envio não bloqueie a thread da requisição de registro
     @Async
     @Transactional
-    public void enviarCodigoVerificacao(Integer idUsuario) {
+    public void enviarCodigoVerificacao(Long idUsuario) {
         UsuarioORM usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado"));
 
@@ -65,7 +65,7 @@ public class VerificacaoEmailService {
     // ─── Verificação do código ─────────────────────────────────────────────────
 
     @Transactional
-    public void verificar(Integer idUsuario, String codigoRecebido) {
+    public void verificar(Long idUsuario, String codigoRecebido) {
         UsuarioORM usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado"));
 
@@ -99,7 +99,7 @@ public class VerificacaoEmailService {
     // Permite ao usuário solicitar um novo código caso o anterior tenha expirado
     @Async
     @Transactional
-    public void reenviarCodigo(Integer idUsuario) {
+    public void reenviarCodigo(Long idUsuario) {
         enviarCodigoVerificacao(idUsuario);
         log.debug("Código de verificação reenviado para usuário id={}", idUsuario);
     }

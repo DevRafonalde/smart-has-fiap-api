@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_progresso_modulo_usuario")
@@ -14,7 +17,7 @@ public class ProgressoModuloORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idUsuario", referencedColumnName = "id", nullable = false, updatable = false)
@@ -26,4 +29,8 @@ public class ProgressoModuloORM {
 
     @Column(name = "concluido", nullable = false)
     private boolean concluido = false;
+
+    @Column(name = "dataConclusao")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataConclusao;
 }

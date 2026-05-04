@@ -28,7 +28,7 @@ public class PermissaoService {
                 .toList();
     }
 
-    public PermissaoDTO listarPorId(Integer id) {
+    public PermissaoDTO listarPorId(Long id) {
         PermissaoORM permissaoORM = permissaoRepository.findById(id).orElseThrow(() -> new ElementoNaoEncontradoException("Não foi encontrada nenhuma permissão com os parâmetros enviados"));
 
         return mapper.map(permissaoORM, PermissaoDTO.class);

@@ -14,7 +14,7 @@ public class AvaliacaoORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Integer id;
+    private Long id;
 
     @Column(name = "maxTentativas", nullable = false)
     private Integer maxTentativas = 3;

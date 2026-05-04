@@ -38,7 +38,7 @@ public class PermissaoController {
 
     @GetMapping("/listar-especifico/{id}")
     @Permissao(rota = "listarpermissaoespecifica")
-    public ResponseEntity<PermissaoDTO> listarPermissaoEspecifica(@PathVariable Integer id) {
+    public ResponseEntity<PermissaoDTO> listarPermissaoEspecifica(@PathVariable Long id) {
         PermissaoDTO permissaoEncontrada = permissaoService.listarPorId(id);
 
         return new ResponseEntity<>(permissaoEncontrada, HttpStatus.OK);
@@ -46,7 +46,7 @@ public class PermissaoController {
 
     @DeleteMapping("/deletar/{id}")
     @Permissao(rota = "deletarpermissao")
-    public ResponseEntity<Boolean> deletarPermissao(@PathVariable Integer id) {
+    public ResponseEntity<Boolean> deletarPermissao(@PathVariable Long id) {
         permissaoService.deletar(id);
 
         return new ResponseEntity<>(true, HttpStatus.OK);

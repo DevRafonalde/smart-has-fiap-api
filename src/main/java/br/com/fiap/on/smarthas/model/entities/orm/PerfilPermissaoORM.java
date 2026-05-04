@@ -17,7 +17,7 @@ public class PerfilPermissaoORM {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idPerfil", referencedColumnName = "id", nullable = false)

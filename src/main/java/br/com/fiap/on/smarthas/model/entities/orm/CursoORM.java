@@ -14,7 +14,7 @@ public class CursoORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",  updatable = false, nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "titulo",  nullable = false)
     private String titulo;

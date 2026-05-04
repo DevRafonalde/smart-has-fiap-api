@@ -10,24 +10,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class QuestaoORM {
+public class OpcaoQuestaoORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "idAvaliacao", referencedColumnName = "id", nullable = false, updatable = false)
-    private AvaliacaoORM avaliacao;
+    @JoinColumn(name = "idQuestao", referencedColumnName = "id", nullable = false, updatable = false)
+    private QuestaoORM questao;
 
-    @Column(name = "enunciado", nullable = false)
-    private String enunciado;
+    @Column(name = "texto")
+    private String texto;
 
-    // Pode ser nulo, nem toda questão precisa de uma ilustração
     @Column(name = "linkFoto")
     private String linkFoto;
 
-    // Quanto vale a questão, no fim a soma do valor das questões de cada avaliação precisa dar 100
-    @Column(name = "valor", nullable = false)
-    private Integer valor;
+    @Column(name = "correta", nullable = false)
+    private boolean correta;
 }

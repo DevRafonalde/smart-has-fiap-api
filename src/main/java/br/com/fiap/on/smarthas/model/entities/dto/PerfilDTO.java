@@ -11,7 +11,7 @@ import lombok.ToString;
 @Data
 @ToString
 public class PerfilDTO {
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "O nome do perfil é obrigatório")
     private String nome;

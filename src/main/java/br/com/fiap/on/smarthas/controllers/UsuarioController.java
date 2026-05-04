@@ -51,7 +51,7 @@ public class UsuarioController {
 
     @GetMapping("/listar-especifico/{id}")
     @Permissao(rota = "listarusuarioespecifico")
-    public ResponseEntity<UsuarioPerfilDTO> listarUsuarioEspecifico(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioPerfilDTO> listarUsuarioEspecifico(@PathVariable Long id) {
         UsuarioPerfilDTO usuario = usuarioService.listarEspecifico(id);
 
         return new ResponseEntity<>(usuario, HttpStatus.OK);
@@ -59,7 +59,7 @@ public class UsuarioController {
 
     @GetMapping("/clonar/{id}")
     @Permissao(rota = "clonarusuario")
-    public ResponseEntity<UsuarioPerfilDTO> clonarUsuario(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioPerfilDTO> clonarUsuario(@PathVariable Long id) {
         UsuarioPerfilDTO usuarioClonado = usuarioService.clonar(id);
 
         return new ResponseEntity<>(usuarioClonado, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class UsuarioController {
 
     @DeleteMapping("/deletar/{id}")
     @Permissao(rota = "deletarusuario")
-    public ResponseEntity<Boolean> deletarUsuario(@PathVariable Integer id) {
+    public ResponseEntity<Boolean> deletarUsuario(@PathVariable Long id) {
         usuarioService.deletar(id);
 
         return new ResponseEntity<>(true, HttpStatus.OK);

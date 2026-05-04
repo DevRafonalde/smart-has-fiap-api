@@ -14,7 +14,7 @@ import lombok.ToString;
 @Data
 @ToString
 public class UsuarioDTO {
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "Insira um CPF")
     @CPFValido(message = "O CPF inserido é inválido")

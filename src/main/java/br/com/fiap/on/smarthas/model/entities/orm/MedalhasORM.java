@@ -14,7 +14,7 @@ public class MedalhasORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idUsuario", referencedColumnName = "id", nullable = false, updatable = false)

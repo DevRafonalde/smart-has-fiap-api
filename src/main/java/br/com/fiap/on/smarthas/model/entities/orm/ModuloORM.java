@@ -14,7 +14,7 @@ public class ModuloORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idCurso", referencedColumnName = "id", updatable = false, nullable = false)

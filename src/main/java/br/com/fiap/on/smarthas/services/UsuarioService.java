@@ -49,7 +49,7 @@ public class UsuarioService {
                 .toList();
     }
 
-    public UsuarioPerfilDTO listarEspecifico(Integer id) {
+    public UsuarioPerfilDTO listarEspecifico(Long id) {
         UsuarioORM usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado no banco de dados"));
 
@@ -66,13 +66,13 @@ public class UsuarioService {
         return usuarioPerfilDTO;
     }
 
-    public UsuarioPerfilDTO clonar(Integer id) {
+    public UsuarioPerfilDTO clonar(Long id) {
         UsuarioPerfilDTO usuarioExistente = listarEspecifico(id);
         usuarioExistente.setUsuario(null);
         return usuarioExistente;
     }
 
-    public void deletar(Integer id) {
+    public void deletar(Long id) {
         UsuarioORM usuarioDelete = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado no banco de dados"));
 
@@ -196,7 +196,7 @@ public class UsuarioService {
         // Exemplo: atualizar data de último acesso, etc.
     }
 
-    public UsuarioORM buscarOrmPorId(Integer id) {
+    public UsuarioORM buscarOrmPorId(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ElementoNaoEncontradoException("Usuário não encontrado"));
     }

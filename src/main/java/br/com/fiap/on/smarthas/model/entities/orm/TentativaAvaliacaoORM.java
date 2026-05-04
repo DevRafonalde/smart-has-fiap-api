@@ -14,11 +14,15 @@ public class TentativaAvaliacaoORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idAvaliacao", referencedColumnName = "id", nullable = false, updatable = false)
     private AvaliacaoORM avaliacao;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "idUsuario", referencedColumnName = "id", nullable = false, updatable = false)
+    private UsuarioORM aluno;
 
     @Column(name = "nota", nullable = false)
     private Integer nota;

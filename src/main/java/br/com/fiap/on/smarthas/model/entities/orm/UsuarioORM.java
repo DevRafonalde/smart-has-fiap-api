@@ -14,7 +14,7 @@ public class UsuarioORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Integer id;
+    private Long id;
 
     @Column(name = "cpf", nullable = false, length = 11)
     private String cpf;

@@ -40,7 +40,7 @@ public class PerfilService {
                 .toList();
     }
 
-    public PerfilUsuarioDTO listarUsuariosVinculados(Integer id) {
+    public PerfilUsuarioDTO listarUsuariosVinculados(Long id) {
         PerfilORM perfil = perfilRepository.findById(id).orElseThrow(() -> new ElementoNaoEncontradoException("Perfil não encontrado no banco de dados"));
         PerfilDTO perfilDTO = mapper.map(perfil, PerfilDTO.class);
 
@@ -71,7 +71,7 @@ public class PerfilService {
      * @param id Id do perfil a ser pesquisado
      * @return Objeto de perfil com todas as permissões vinculadas a ele
      */
-    public PerfilPermissaoDTO listarEspecifico(Integer id) {
+    public PerfilPermissaoDTO listarEspecifico(Long id) {
         PerfilORM perfil = perfilRepository.findById(id).orElseThrow(() -> new ElementoNaoEncontradoException("Perfil não encontrado no banco de dados"));
         PerfilDTO perfilDTO = mapper.map(perfil, PerfilDTO.class);
 
@@ -89,7 +89,7 @@ public class PerfilService {
         return perfilPermissaoRecebido;
     }
 
-    public PerfilPermissaoDTO clonar(Integer id) {
+    public PerfilPermissaoDTO clonar(Long id) {
         PerfilPermissaoDTO perfilExistente = listarEspecifico(id);
         perfilExistente.setPerfil(new PerfilDTO());
         return perfilExistente;

@@ -38,14 +38,14 @@ public class PerfilController {
 
     @GetMapping("/listar-usuarios-vinculados/{id}")
     @Permissao(rota = "listarusuariosvinculados")
-    public ResponseEntity<PerfilUsuarioDTO> listarUsuariosVinculados(@PathVariable Integer id) {
+    public ResponseEntity<PerfilUsuarioDTO> listarUsuariosVinculados(@PathVariable Long id) {
         PerfilUsuarioDTO perfilUsuarioDTO = perfilService.listarUsuariosVinculados(id);
 
         return new ResponseEntity<>(perfilUsuarioDTO, HttpStatus.OK);
     }
 
 //    @GetMapping("/vincular-usuarios-em-lote/{id}")
-//    public String vincularUsuariosEmLote(@PathVariable Integer id, ModelMap modelMap) {
+//    public String vincularUsuariosEmLote(@PathVariable Long id, ModelMap modelMap) {
 //        PerfilUsuarioDTO modeloCadastroPerfilUsuario = perfilService.listarUsuariosVinculados(id);
 //        modelMap.addAttribute("modeloCadastroPerfilUsuario", modeloCadastroPerfilUsuario);
 //        return "perfis/usuarios-em-lote";
@@ -53,7 +53,7 @@ public class PerfilController {
 
     @GetMapping("/listar-especifico/{id}")
     @Permissao(rota = "listarperfilespecifico")
-    public ResponseEntity<PerfilPermissaoDTO> listarPerfilEspecifico(@PathVariable Integer id) {
+    public ResponseEntity<PerfilPermissaoDTO> listarPerfilEspecifico(@PathVariable Long id) {
         PerfilPermissaoDTO perfilPermissao = perfilService.listarEspecifico(id);
 
         return new ResponseEntity<>(perfilPermissao, HttpStatus.OK);
@@ -61,7 +61,7 @@ public class PerfilController {
 
     @GetMapping("/clonar/{id}")
     @Permissao(rota = "clonarperfil")
-    public ResponseEntity<PerfilPermissaoDTO> clonarPerfil(@PathVariable Integer id) {
+    public ResponseEntity<PerfilPermissaoDTO> clonarPerfil(@PathVariable Long id) {
         PerfilPermissaoDTO perfilPermissaoDTO = perfilService.clonar(id);
 
         return new ResponseEntity<>(perfilPermissaoDTO, HttpStatus.OK);
@@ -69,7 +69,7 @@ public class PerfilController {
 
     @DeleteMapping("/deletar/{id}")
     @Permissao(rota = "deletarperfil")
-    public ResponseEntity<Boolean> deletarPerfil(@PathVariable Integer id) {
+    public ResponseEntity<Boolean> deletarPerfil(@PathVariable Long id) {
         perfilService.deletar(id);
 
         return new ResponseEntity<>(true, HttpStatus.OK);
