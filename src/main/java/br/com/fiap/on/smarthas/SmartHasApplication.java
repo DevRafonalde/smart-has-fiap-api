@@ -10,4 +10,5 @@ public class SmartHasApplication {
 	}
 
 	// TODO Fazer reset de senha
+	// TODO Fazer tbl de aulas e ligar aos modulos para medir progresso
 }
