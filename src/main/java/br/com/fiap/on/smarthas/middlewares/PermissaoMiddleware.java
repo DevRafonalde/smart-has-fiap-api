@@ -1,26 +1,24 @@
 package br.com.fiap.on.smarthas.middlewares;
 
+import br.com.fiap.on.smarthas.annotations.Permissao;
+import br.com.fiap.on.smarthas.exceptions.AcessoNaoAutorizadoException;
 import br.com.fiap.on.smarthas.model.entities.dto.UsuarioPerfilDTO;
 import br.com.fiap.on.smarthas.services.JwtService;
 import br.com.fiap.on.smarthas.services.PerfilService;
 import br.com.fiap.on.smarthas.services.UsuarioService;
-import br.com.fiap.on.smarthas.annotations.Permissao;
-import br.com.fiap.on.smarthas.exceptions.AcessoNaoAutorizadoException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-@AllArgsConstructor
 @RequiredArgsConstructor
 public class PermissaoMiddleware implements HandlerInterceptor {
-    private JwtService jwtService;
-    private UsuarioService usuarioService;
-    private PerfilService perfilService;
+    private final JwtService jwtService;
+    private final UsuarioService usuarioService;
+    private final PerfilService perfilService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

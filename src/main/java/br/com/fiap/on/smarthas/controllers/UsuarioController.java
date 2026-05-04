@@ -22,9 +22,9 @@ import java.util.List;
 @RequestMapping("/auth/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
-    private UsuarioService usuarioService;
-    private JwtService jwtService;
-    private RefreshTokenService refreshTokenService;
+    private final UsuarioService usuarioService;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/cadastrar")
     @Permissao(rota = "cadastrarusuario")
@@ -42,7 +42,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/listar")
-//    @Permissao(rota = "listartodosusuarios")
+    @Permissao(rota = "listartodosusuarios")
     public ResponseEntity<List<UsuarioDTO>> listarTodosUsuarios(Pageable pageable) {
         List<UsuarioDTO> usuarios = usuarioService.listarTodos(pageable);
 

@@ -1,14 +1,13 @@
 package br.com.fiap.on.smarthas.services;
 
-import br.com.fiap.on.smarthas.controllers.PerfilController;
-import br.com.fiap.on.smarthas.controllers.PermissaoController;
-import br.com.fiap.on.smarthas.controllers.UsuarioController;
+import br.com.fiap.on.smarthas.annotations.Permissao;
+import br.com.fiap.on.smarthas.config.PasswordUtil;
+import br.com.fiap.on.smarthas.controllers.*;
 import br.com.fiap.on.smarthas.model.entities.orm.*;
 import br.com.fiap.on.smarthas.model.repositories.*;
-import br.com.fiap.on.smarthas.config.PasswordUtil;
-import br.com.fiap.on.smarthas.annotations.Permissao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +27,28 @@ public class InicializacaoService {
     private final PerfilPermissaoRepository perfilPermissaoRepository;
     private final UsuarioPerfilRepository usuarioPerfilRepository;
 
+    @Value("${spring.admin.nome-completo}")
+    private String nomeCompletoAdmin;
+
+    @Value("${spring.admin.nome-amigavel}")
+    private String nomeAmigavelAdmin;
+
+    @Value("${spring.admin.cpf}")
+    private String cpfAdmin;
+
+    @Value("${spring.admin.email}")
+    private String emailAdmin;
+
     // Controllers cujos métodos anotados com @Permissao serão escaneados
     private static final List<Class<?>> CONTROLLERS = List.of(
             PerfilController.class,
             PermissaoController.class,
-            UsuarioController.class
+            UsuarioController.class,
+            AulaController.class,
+            AvaliacaoController.class,
+            CursoController.class,
+            ModuloController.class,
+            VerificacaoEmailController.class
     );
 
     @Transactional
@@ -51,8 +67,19 @@ public class InicializacaoService {
         log.info("Iniciando seeder de autenticação...");
 
         List<PermissaoORM> todasPermissoes = criarPermissoes();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("PERMISSÕES CRIADAS, VAI CONFIGURAR ADMIN AGORA");
         configurarAdmin(todasPermissoes);
-        configurarPerfilPadrao(todasPermissoes);
+//        configurarPerfilPadrao(todasPermissoes);
 
         log.info("Seeder concluído. {} permissões criadas.", todasPermissoes.size());
     }
@@ -109,7 +136,7 @@ public class InicializacaoService {
     // ─── Configuração do admin ─────────────────────────────────────────────────
 
     private void configurarAdmin(List<PermissaoORM> todasPermissoes) {
-        if (Objects.nonNull(usuarioRepository.findByNomeAmigavelContaining("Administrador"))) {
+        if (!usuarioRepository.findByNomeAmigavelContaining("Administrador").isEmpty()) {
             log.info("Usuário admin já existe. Pulando.");
             return;
         }
@@ -127,7 +154,7 @@ public class InicializacaoService {
 
     // ─── Controllers acessíveis pelo perfil padrão ────────────────────────────
     // Para dar acesso a um novo controller ao perfil padrão, basta adicioná-lo aqui.
-    // Permissões cujo nome começa com "admin" são sempre excluídas,
+    // Permissões cujo nome tenha "admin" são sempre excluídas,
     // independente do controller listado.
     private static final List<Class<?>> CONTROLLERS_PADRAO = List.of(
             PerfilController.class,
@@ -154,7 +181,7 @@ public class InicializacaoService {
                 .filter(Objects::nonNull)
                 .map(Permissao::rota)
                 .map(String::toLowerCase)
-                .filter(rota -> !rota.startsWith("admin"))
+                .filter(rota -> !rota.contains("admin"))
                 .distinct()
                 .toList();
 
@@ -172,11 +199,16 @@ public class InicializacaoService {
 
     private UsuarioORM criarUsuarioAdmin() {
         UsuarioORM admin = new UsuarioORM();
-        admin.setNomeCompleto("Administrador");
-        admin.setNomeAmigavel("Administrador");
+        admin.setNomeCompleto(nomeCompletoAdmin.replace("'", ""));
+        admin.setNomeAmigavel(nomeAmigavelAdmin.replace("'", ""));
+        admin.setCpf(cpfAdmin);
+        admin.setEmail(emailAdmin.replace("'", ""));
+        admin.setEmailVerificado(true);
         admin.setSenhaUser(PasswordUtil.hashPassword("123456"));
-        admin.setSenhaAtualizada(true);
+        admin.setSenhaAtualizada(false);
         admin.setAtivo(true);
+
+        System.out.println("Criado Usuário admin");
         return usuarioRepository.save(admin);
     }
 
@@ -186,6 +218,8 @@ public class InicializacaoService {
         perfil.setMnemonico(mnemonico);
         perfil.setDescricao(descricao);
         perfil.setAtivo(true);
+
+        System.out.println("Criado perfil admin");
         return perfilRepository.save(perfil);
     }
 

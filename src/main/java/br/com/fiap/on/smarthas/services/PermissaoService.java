@@ -17,9 +17,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PermissaoService {
-    private PermissaoRepository permissaoRepository;
-    private PerfilPermissaoRepository perfilPermissaoRepository;
-    private ModelMapper mapper;
+    private final PermissaoRepository permissaoRepository;
+    private final PerfilPermissaoRepository perfilPermissaoRepository;
+    private final ModelMapper mapper;
 
     public List<PermissaoDTO> listarTodas(Pageable pageable) {
         Page<PermissaoORM> permissoes = permissaoRepository.findAll(pageable);

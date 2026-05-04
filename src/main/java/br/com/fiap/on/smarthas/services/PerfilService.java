@@ -1,9 +1,11 @@
 package br.com.fiap.on.smarthas.services;
 
+import br.com.fiap.on.smarthas.exceptions.ElementoNaoEncontradoException;
 import br.com.fiap.on.smarthas.model.entities.dto.*;
 import br.com.fiap.on.smarthas.model.entities.orm.*;
-import br.com.fiap.on.smarthas.model.repositories.*;
-import br.com.fiap.on.smarthas.exceptions.ElementoNaoEncontradoException;
+import br.com.fiap.on.smarthas.model.repositories.PerfilPermissaoRepository;
+import br.com.fiap.on.smarthas.model.repositories.PerfilRepository;
+import br.com.fiap.on.smarthas.model.repositories.UsuarioPerfilRepository;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,13 +22,11 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class PerfilService {
-    private PerfilRepository perfilRepository;
-    private PerfilPermissaoRepository perfilPermissaoRepository;
-    private PermissaoRepository permissaoRepository;
-    private UsuarioPerfilRepository usuarioPerfilRepository;
-    private UsuarioRepository usuarioRepository;
-    private ModelMapper mapper;
-    private Validator validator;
+    private final PerfilRepository perfilRepository;
+    private final PerfilPermissaoRepository perfilPermissaoRepository;
+    private final UsuarioPerfilRepository usuarioPerfilRepository;
+    private final ModelMapper mapper;
+    private final Validator validator;
 
     /**
      * @return Todos os perfis cadastrados, sem a listagem de suas permissões

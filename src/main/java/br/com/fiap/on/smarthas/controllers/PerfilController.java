@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/auth/perfis")
 @RequiredArgsConstructor
 public class PerfilController {
-    private PerfilService perfilService;
+    private final PerfilService perfilService;
 
     @PostMapping("/cadastrar")
     @Permissao(rota = "cadastrarperfil")

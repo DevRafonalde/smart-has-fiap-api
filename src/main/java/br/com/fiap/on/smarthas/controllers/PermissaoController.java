@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/auth/permissoes")
 @RequiredArgsConstructor
 public class PermissaoController {
-    private PermissaoService permissaoService;
+    private final PermissaoService permissaoService;
 
     @PostMapping("/cadastrar")
     @Permissao(rota = "cadastrarpermissao")

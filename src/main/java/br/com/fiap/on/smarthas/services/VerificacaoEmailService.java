@@ -122,7 +122,7 @@ public class VerificacaoEmailService {
             MimeMessage mensagem = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mensagem, true, "UTF-8");
 
-            helper.setFrom(remetente, "SmartHAS · Digital 360");
+            helper.setFrom(remetente.replace("'", ""), "SmartHAS · Digital 360");
             helper.setTo(usuario.getEmail());
             helper.setSubject("Seu código de verificação — SmartHAS Digital 360");
 

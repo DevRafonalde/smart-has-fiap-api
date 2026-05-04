@@ -13,6 +13,12 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
+  admin:
+    nome-completo: ${NOME_COMPLETO_ADMIN}
+    nome-amigavel: ${NOME_AMIGAVEL_ADMIN}
+    cpf: ${CPF_ADMIN}
+    email: ${EMAIL_ADMIN}
+
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
