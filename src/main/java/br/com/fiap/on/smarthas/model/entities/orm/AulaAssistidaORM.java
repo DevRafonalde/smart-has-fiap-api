@@ -6,26 +6,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "t_opcoes_questao")
+@Table(name = "t_aulas_assistidas")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class OpcaoQuestaoORM {
+public class AulaAssistidaORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "idQuestao", referencedColumnName = "id", nullable = false, updatable = false)
-    private QuestaoORM questao;
+    @JoinColumn(name = "idUsuario", referencedColumnName = "id", nullable = false, updatable = false)
+    private UsuarioORM aluno;
 
-    @Column(name = "texto")
-    private String texto;
-
-    @Column(name = "linkFoto")
-    private String linkFoto;
-
-    @Column(name = "correta", nullable = false)
-    private boolean correta;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "idAula", referencedColumnName = "id", nullable = false, updatable = false)
+    private AulaORM aula;
 }
