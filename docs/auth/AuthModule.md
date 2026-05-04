@@ -544,7 +544,7 @@ security:
 ```
 
 ```bash
-# .env
+# .env.properties
 JWT_SECRET=sua-chave-secreta-com-minimo-256-bits
 JWT_EXPIRATION=900
 JWT_REFRESH=604800

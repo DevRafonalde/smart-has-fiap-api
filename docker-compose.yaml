@@ -82,7 +82,7 @@ services:
   #     dockerfile: Dockerfile
   #   container_name: smarthas-api
   #   restart: unless-stopped
-  #   env_file: .env
+  #   env_file: .env.properties
   #   ports:
   #     - "8080:8080"
   #   depends_on:

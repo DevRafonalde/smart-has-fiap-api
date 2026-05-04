@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface OpcaoQuestaoRepository extends JpaRepository<OpcaoQuestaoORM, Long> {
     List<OpcaoQuestaoORM> findByQuestao_Id(Long questaoId);
-    List<OpcaoQuestaoORM> findAllbyQuestao_Id(List<Long> questaoId);
+    List<OpcaoQuestaoORM> findByQuestao_IdIn(List<Long> questaoId);
 }

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @RequiredArgsConstructor
 public class InterceptorConfig implements WebMvcConfigurer {
-    private PermissaoMiddleware permissaoMiddleware;
+    private final PermissaoMiddleware permissaoMiddleware;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

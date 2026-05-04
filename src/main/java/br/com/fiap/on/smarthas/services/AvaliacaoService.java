@@ -46,7 +46,7 @@ public class AvaliacaoService {
     private AvaliacaoCompletaDTO montarAvaliacao(Long idModulo) {
         AvaliacaoORM avaliacao = avaliacaoRepository.findByModulo_Id(idModulo);
         List<QuestaoORM> questoes = questaoRepository.findByAvaliacao_Id(avaliacao.getId());
-        List<OpcaoQuestaoORM> alternativas = opcaoQuestaoRepository.findAllbyQuestao_Id(questoes.stream().map(QuestaoORM::getId).toList());
+        List<OpcaoQuestaoORM> alternativas = opcaoQuestaoRepository.findByQuestao_IdIn(questoes.stream().map(QuestaoORM::getId).toList());
 
         Map<Long, List<OpcaoQuestaoORM>> alternativasPorQuestao =
                 alternativas.stream()

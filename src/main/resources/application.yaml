@@ -4,6 +4,9 @@
 # ─────────────────────────────────────────────────────────────
 
 spring:
+  config:
+    import: optional:file:.env.properties
+
   application:
     name: smarthas-api
 
@@ -41,7 +44,7 @@ spring:
   # ── JPA / Hibernate ───────────────────────────────────────
   jpa:
     hibernate:
-      ddl-auto: validate           # Flyway gerencia o schema — nunca use create/update em prod
+      ddl-auto: create           # Flyway gerencia o schema — nunca use create/update em prod
     show-sql: false
     open-in-view: false
     properties:
@@ -53,53 +56,52 @@ spring:
           time_zone: America/Sao_Paulo
 
   # ── Flyway (migrations) ───────────────────────────────────
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    validate-on-migrate: true
-
-  # ── Redis (cache + sessões) ───────────────────────────────
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:redis123}
-      timeout: 2000ms
-      lettuce:
-        pool:
-          max-active: 8
-          max-idle: 8
-          min-idle: 2
-
-  # ── RabbitMQ (notificações assíncronas) ───────────────────
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USER:smarthas}
-    password: ${RABBITMQ_PASSWORD:rabbitmq123}
-    virtual-host: /
-    listener:
-      simple:
-        acknowledge-mode: auto
-        retry:
-          enabled: true
-          initial-interval: 3000ms
-          max-attempts: 3
-          multiplier: 2.0
-
-  # ── Cache ─────────────────────────────────────────────────
-  cache:
-    type: redis
-    redis:
-      time-to-live: 3600000       # 1 hora (ms) — padrão global
-      cache-null-values: false
+#  flyway:
+#    enabled: true
+#    locations: classpath:db/migration
+#    baseline-on-migrate: true
+#    validate-on-migrate: true
+#
+#  # ── Redis (cache + sessões) ───────────────────────────────
+#  data:
+#    redis:
+#      host: ${REDIS_HOST:localhost}
+#      port: ${REDIS_PORT:6379}
+#      password: ${REDIS_PASSWORD:redis123}
+#      timeout: 2000ms
+#      lettuce:
+#        pool:
+#          max-active: 8
+#          max-idle: 8
+#          min-idle: 2
+#
+#  # ── RabbitMQ (notificações assíncronas) ───────────────────
+#  rabbitmq:
+#    host: ${RABBITMQ_HOST:localhost}
+#    port: ${RABBITMQ_PORT:5672}
+#    username: ${RABBITMQ_USER:smarthas}
+#    password: ${RABBITMQ_PASSWORD:rabbitmq123}
+#    virtual-host: /
+#    listener:
+#      simple:
+#        acknowledge-mode: auto
+#        retry:
+#          enabled: true
+#          initial-interval: 3000ms
+#          max-attempts: 3
+#          multiplier: 2.0
+#
+#  # ── Cache ─────────────────────────────────────────────────
+#  cache:
+#    type: redis
+#    redis:
+#      time-to-live: 3600000       # 1 hora (ms) — padrão global
+#      cache-null-values: false
 
   # ── Serialização JSON ─────────────────────────────────────
   jackson:
     default-property-inclusion: non_null
-    serialization:
-      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd'T'HH:mm:ss
     deserialization:
       fail-on-unknown-properties: false
     time-zone: America/Sao_Paulo
@@ -126,12 +128,12 @@ security:
 
 # ── RabbitMQ — Filas e Exchanges ──────────────────────────────
 smarthas:
-  rabbitmq:
-    exchange: smarthas.exchange
-    queues:
-      notification: smarthas.notification.queue
-      email: smarthas.email.queue
-      push: smarthas.push.queue
+#  rabbitmq:
+#    exchange: smarthas.exchange
+#    queues:
+#      notification: smarthas.notification.queue
+#      email: smarthas.email.queue
+#      push: smarthas.push.queue
 
   # Regras de negócio configuráveis (RNs do projeto)
   rules:
@@ -207,10 +209,10 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
 
-  flyway:
-    enabled: true
+#  flyway:
+#    enabled: false
 
 logging:
   level:
@@ -234,7 +236,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
 
 logging:
   level:

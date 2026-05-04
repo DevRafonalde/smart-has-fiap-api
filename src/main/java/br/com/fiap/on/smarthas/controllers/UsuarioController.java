@@ -42,7 +42,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/listar")
-    @Permissao(rota = "listartodosusuarios")
+//    @Permissao(rota = "listartodosusuarios")
     public ResponseEntity<List<UsuarioDTO>> listarTodosUsuarios(Pageable pageable) {
         List<UsuarioDTO> usuarios = usuarioService.listarTodos(pageable);
 

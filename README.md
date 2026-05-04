@@ -99,7 +99,7 @@ cd smart-has-fiap-api
 ### 2. Configure as variáveis de ambiente
 
 ```bash
-cp .env.example .env
+cp .env.properties.example .env.properties
 ```
 
 > ⚠️ O arquivo `.env` já vem com valores padrão para desenvolvimento local. **Nunca suba o `.env` para o Git.**
