@@ -1,5 +1,7 @@
 package br.com.fiap.on.smarthas.controllers;
 
+import br.com.fiap.on.smarthas.annotations.Permissao;
+import br.com.fiap.on.smarthas.model.entities.dto.ModuloCompletoDTO;
 import br.com.fiap.on.smarthas.model.entities.dto.ModuloDTO;
 import br.com.fiap.on.smarthas.services.ModuloService;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +24,9 @@ public class ModuloController {
         return ResponseEntity.ok().body(moduloService.buscarModulosPorCurso(id));
     }
 
+    @GetMapping("/{id}")
+    @Permissao(rota = "buscarmoduloporid")
+    public ResponseEntity<ModuloCompletoDTO> buscarModuloPorId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(moduloService.buscarModuloPorId(id));
+    }
 }

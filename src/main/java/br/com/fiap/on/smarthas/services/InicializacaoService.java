@@ -109,7 +109,7 @@ public class InicializacaoService {
     // ─── Configuração do admin ─────────────────────────────────────────────────
 
     private void configurarAdmin(List<PermissaoORM> todasPermissoes) {
-        if (Objects.nonNull(usuarioRepository.findByNomeUser("admin"))) {
+        if (Objects.nonNull(usuarioRepository.findByNomeAmigavelContaining("Administrador"))) {
             log.info("Usuário admin já existe. Pulando.");
             return;
         }
@@ -174,7 +174,6 @@ public class InicializacaoService {
         UsuarioORM admin = new UsuarioORM();
         admin.setNomeCompleto("Administrador");
         admin.setNomeAmigavel("Administrador");
-        admin.setNomeUser("admin");
         admin.setSenhaUser(PasswordUtil.hashPassword("123456"));
         admin.setSenhaAtualizada(true);
         admin.setAtivo(true);

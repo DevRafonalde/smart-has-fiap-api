@@ -1,5 +1,6 @@
 package br.com.fiap.on.smarthas.services;
 
+import br.com.fiap.on.smarthas.exceptions.CondicaoInsatisfeitaException;
 import br.com.fiap.on.smarthas.model.entities.dto.LoginRequestDTO;
 import br.com.fiap.on.smarthas.model.entities.dto.PerfilDTO;
 import br.com.fiap.on.smarthas.model.entities.dto.UsuarioDTO;
@@ -85,6 +86,10 @@ public class UsuarioService {
     }
 
     public UsuarioPerfilDTO novoUsuario(UsuarioPerfilDTO usuarioPerfilDTO) {
+        if (usuarioPerfilDTO.getUsuario().getNomeAmigavel().contains("Administrador") || usuarioPerfilDTO.getUsuario().getNomeCompleto().contains("Administrador")) {
+            throw new CondicaoInsatisfeitaException("Nome não pode conter \"Administrador\"");
+        }
+
         UsuarioORM usuarioExistente = usuarioRepository.findByCpf(usuarioPerfilDTO.getUsuario().getCpf());
         if (Objects.nonNull(usuarioExistente)) {
             throw new AtributoJaUtilizadoException("CPF já está cadastrado");

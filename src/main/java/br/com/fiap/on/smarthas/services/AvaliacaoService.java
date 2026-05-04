@@ -85,6 +85,6 @@ public class AvaliacaoService {
 
         dto.setQuestoes(questoesDTO);
 
-        return null;
+        return dto;
     }
 }
