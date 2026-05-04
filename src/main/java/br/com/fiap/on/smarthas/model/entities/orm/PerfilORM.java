@@ -22,7 +22,7 @@ public class PerfilORM {
     @Column(name = "descricao", nullable = false)
     private String descricao;
 
-    @Column(name = "mnemonico", nullable = false)
+    @Column(name = "mnemonico", nullable = false, updatable = false)
     private String mnemonico;
 
     @Column(name = "ativo", nullable = false)

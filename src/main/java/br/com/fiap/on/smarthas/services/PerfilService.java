@@ -95,7 +95,7 @@ public class PerfilService {
         return perfilExistente;
     }
 
-    public void deletar(int id) {
+    public void deletar(Long id) {
         PerfilORM perfilDelete = perfilRepository.findById(id).orElseThrow(() -> new ElementoNaoEncontradoException("Perfil não encontrado no banco de dados"));
 
         List<UsuarioPerfilORM> usuariosPerfil = usuarioPerfilRepository.findByPerfil(perfilDelete);

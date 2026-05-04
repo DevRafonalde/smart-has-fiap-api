@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RefreshTokenRepository extends CrudRepository<RefreshTokenORM, Integer> {
+public interface RefreshTokenRepository extends CrudRepository<RefreshTokenORM, Long> {
     Optional<RefreshTokenORM> findByToken(String token);
     List<RefreshTokenORM> findByUsuario(UsuarioORM usuario);
 }

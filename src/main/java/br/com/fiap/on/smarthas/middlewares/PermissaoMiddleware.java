@@ -50,7 +50,7 @@ public class PermissaoMiddleware implements HandlerInterceptor {
 
         token = token.substring(7);
 
-        int idUsuario;
+        Long idUsuario;
         try {
             idUsuario = jwtService.validarTokenERetornarId(token);
         } catch (Exception e) {

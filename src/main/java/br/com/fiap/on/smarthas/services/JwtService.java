@@ -34,7 +34,7 @@ public class JwtService {
         log.debug("Gerando access token para usuário id={}", usuario.getId());
 
         return Jwts.builder()
-                .setSubject(usuario.getNomeUser())
+                .setSubject(usuario.getCpf())
                 .claim("idUsuario", usuario.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiracaoSegundos * 1000))
@@ -42,7 +42,7 @@ public class JwtService {
                 .compact();
     }
 
-    public int validarTokenERetornarId(String token) {
+    public Long validarTokenERetornarId(String token) {
         log.debug("Validando access token");
 
         return Jwts.parserBuilder()
@@ -50,6 +50,6 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .get("idUsuario", Integer.class);
+                .get("idUsuario", Long.class);
     }
 }

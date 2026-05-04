@@ -6,7 +6,6 @@ import br.com.fiap.on.smarthas.model.entities.dto.MatriculaDTO;
 import br.com.fiap.on.smarthas.model.entities.dto.ProgressoDTO;
 import br.com.fiap.on.smarthas.services.CursoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,41 +19,41 @@ public class CursoController {
 
     @GetMapping("/")
     public ResponseEntity<List<CursoDTO>> buscarTodos() {
-        return new ResponseEntity<>(cursoService.buscarTodos(), HttpStatus.OK);
+        return ResponseEntity.ok(cursoService.buscarTodos());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CursoDTO> buscarPorId(@PathVariable Long id) {
-        return new ResponseEntity<>(cursoService.buscarPorId(id), HttpStatus.OK);
+        return ResponseEntity.ok(cursoService.buscarPorId(id));
     }
 
     @PostMapping("/matricular/{idAluno}/curso/{idCurso}")
     @Permissao(rota = "matricular")
     public ResponseEntity<MatriculaDTO> matricular(@PathVariable Long idAluno, @PathVariable Long idCurso) {
-        return new ResponseEntity<>(cursoService.matricularAluno(idAluno, idCurso), HttpStatus.OK);
+        return ResponseEntity.ok(cursoService.matricularAluno(idAluno, idCurso));
     }
 
     @PostMapping("/cancelar-matricula/{idAluno}/curso/{idCurso}")
     @Permissao(rota = "cancelarmatricula")
     public ResponseEntity<MatriculaDTO> cancelarMatricula(@PathVariable Long idAluno, @PathVariable Long idCurso) {
-        return new ResponseEntity<>(cursoService.cancelarMatricula(idAluno, idCurso), HttpStatus.OK);
+        return ResponseEntity.ok(cursoService.cancelarMatricula(idAluno, idCurso));
     }
 
     @GetMapping("/meu-progresso/{idAluno}/curso/{idCurso}")
     @Permissao(rota = "consultarprogresso")
     public ResponseEntity<ProgressoDTO> consultarProgresso(@PathVariable Long idAluno, @PathVariable Long idCurso) {
-        return new ResponseEntity<>(cursoService.consultarProgresso(idAluno, idCurso), HttpStatus.OK);
+        return ResponseEntity.ok(cursoService.consultarProgresso(idAluno, idCurso));
     }
 
-    @PostMapping("/")// — criar curso
+    @PostMapping("/")
     @Permissao(rota = "criarcurso")
     public ResponseEntity<CursoDTO> criarCurso(@RequestBody CursoDTO cursoDTO) {
-        return new ResponseEntity<>(cursoService.criarCurso(cursoDTO), HttpStatus.OK);
+        return ResponseEntity.ok(cursoService.criarCurso(cursoDTO));
     }
 
-    @PutMapping("/{id}") // editar
+    @PutMapping("/{id}")
     @Permissao(rota = "editarcurso")
     public ResponseEntity<CursoDTO> editarCurso(@PathVariable Long id, @RequestBody CursoDTO cursoDTO) {
-        return new ResponseEntity<>(cursoService.editarCurso(id, cursoDTO), HttpStatus.OK);
+        return ResponseEntity.ok(cursoService.editarCurso(id, cursoDTO));
     }
 }

@@ -6,19 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "t_medalhas_usuario")
+@Table(name = "t_medalhas")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MedalhasORM {
+public class MedalhaORM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Long id;
-
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "idUsuario", referencedColumnName = "id", nullable = false, updatable = false)
-    private UsuarioORM aluno;
 
     @Column(name = "iconeMedalha", nullable = false)
     private String iconeMedalha;
@@ -26,7 +22,6 @@ public class MedalhasORM {
     @Column(name = "mensagem", nullable = false)
     private String mensagem;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "idTentativa", referencedColumnName = "id", nullable = false, updatable = false)
-    private TentativaAvaliacaoORM tentativaAvaliacao;
+    @Column(name = "mnemonico", nullable = false, updatable = false)
+    private String mnemonico;
 }

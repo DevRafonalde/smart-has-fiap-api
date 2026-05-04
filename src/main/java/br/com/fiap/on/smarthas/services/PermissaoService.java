@@ -34,7 +34,7 @@ public class PermissaoService {
         return mapper.map(permissaoORM, PermissaoDTO.class);
     }
 
-    public void deletar(int id) {
+    public void deletar(Long id) {
         PermissaoORM permissaoDelete = permissaoRepository.findById(id).orElseThrow(() -> new ElementoNaoEncontradoException("Permissão não encontrada no banco de dados"));
 
         List<PerfilPermissaoORM> usosPermissao = perfilPermissaoRepository.findByPermissao(permissaoDelete);

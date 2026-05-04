@@ -1,12 +1,12 @@
 package br.com.fiap.on.smarthas.controllers;
 
+import br.com.fiap.on.smarthas.annotations.Permissao;
 import br.com.fiap.on.smarthas.model.entities.dto.*;
 import br.com.fiap.on.smarthas.model.entities.orm.RefreshTokenORM;
 import br.com.fiap.on.smarthas.model.entities.orm.UsuarioORM;
 import br.com.fiap.on.smarthas.services.JwtService;
 import br.com.fiap.on.smarthas.services.RefreshTokenService;
 import br.com.fiap.on.smarthas.services.UsuarioService;
-import br.com.fiap.on.smarthas.annotations.Permissao;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -129,7 +129,7 @@ public class UsuarioController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
-        int idUsuario = jwtService.validarTokenERetornarId(token);
+        Long idUsuario = jwtService.validarTokenERetornarId(token);
 
         UsuarioORM usuario = usuarioService.buscarOrmPorId(idUsuario);
         refreshTokenService.revogarTodos(usuario);

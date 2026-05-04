@@ -1,14 +1,13 @@
 package br.com.fiap.on.smarthas.controllers;
 
+import br.com.fiap.on.smarthas.annotations.Permissao;
 import br.com.fiap.on.smarthas.model.entities.dto.PerfilDTO;
 import br.com.fiap.on.smarthas.model.entities.dto.PerfilPermissaoDTO;
 import br.com.fiap.on.smarthas.model.entities.dto.PerfilUsuarioDTO;
 import br.com.fiap.on.smarthas.services.PerfilService;
-import br.com.fiap.on.smarthas.annotations.Permissao;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +24,7 @@ public class PerfilController {
     public ResponseEntity<PerfilPermissaoDTO> cadastrarPerfil(@RequestBody PerfilPermissaoDTO perfilPermissaoDTO) {
         PerfilPermissaoDTO perfilCadastrado = perfilService.novoPerfil(perfilPermissaoDTO);
 
-        return new ResponseEntity<>(perfilCadastrado, HttpStatus.OK);
+        return ResponseEntity.ok(perfilCadastrado);
     }
 
     @GetMapping("/listar")
@@ -33,7 +32,7 @@ public class PerfilController {
     public ResponseEntity<List<PerfilDTO>> listarTodosPerfis(Pageable pageable) {
         List<PerfilDTO> perfis = perfilService.listarTodos(pageable);
 
-        return new ResponseEntity<>(perfis, HttpStatus.OK);
+        return ResponseEntity.ok(perfis);
     }
 
     @GetMapping("/listar-usuarios-vinculados/{id}")
@@ -41,7 +40,7 @@ public class PerfilController {
     public ResponseEntity<PerfilUsuarioDTO> listarUsuariosVinculados(@PathVariable Long id) {
         PerfilUsuarioDTO perfilUsuarioDTO = perfilService.listarUsuariosVinculados(id);
 
-        return new ResponseEntity<>(perfilUsuarioDTO, HttpStatus.OK);
+        return ResponseEntity.ok(perfilUsuarioDTO);
     }
 
 //    @GetMapping("/vincular-usuarios-em-lote/{id}")
@@ -56,7 +55,7 @@ public class PerfilController {
     public ResponseEntity<PerfilPermissaoDTO> listarPerfilEspecifico(@PathVariable Long id) {
         PerfilPermissaoDTO perfilPermissao = perfilService.listarEspecifico(id);
 
-        return new ResponseEntity<>(perfilPermissao, HttpStatus.OK);
+        return ResponseEntity.ok(perfilPermissao);
     }
 
     @GetMapping("/clonar/{id}")
@@ -64,7 +63,7 @@ public class PerfilController {
     public ResponseEntity<PerfilPermissaoDTO> clonarPerfil(@PathVariable Long id) {
         PerfilPermissaoDTO perfilPermissaoDTO = perfilService.clonar(id);
 
-        return new ResponseEntity<>(perfilPermissaoDTO, HttpStatus.OK);
+        return ResponseEntity.ok(perfilPermissaoDTO);
     }
 
     @DeleteMapping("/deletar/{id}")
@@ -72,7 +71,7 @@ public class PerfilController {
     public ResponseEntity<Boolean> deletarPerfil(@PathVariable Long id) {
         perfilService.deletar(id);
 
-        return new ResponseEntity<>(true, HttpStatus.OK);
+        return ResponseEntity.ok(true);
     }
 
     @PutMapping("/editar")
@@ -80,13 +79,13 @@ public class PerfilController {
     public ResponseEntity<PerfilPermissaoDTO> editarPerfil(@RequestBody @Valid PerfilPermissaoDTO perfilPermissaoRecebido) {
         PerfilPermissaoDTO perfilPermissaoAtualizado = perfilService.editar(perfilPermissaoRecebido);
 
-        return new ResponseEntity<>(perfilPermissaoAtualizado, HttpStatus.OK);
+        return ResponseEntity.ok(perfilPermissaoAtualizado);
     }
 
 //    @PostMapping("/vincular-usuarios-em-lote")
 //    public ResponseEntity<Integer> vincularUsuariosEmLotePost(@RequestBody ModeloCadastroPerfilUsuarioId modeloCadastroPerfilUsuarioId, RedirectAttributes attributes) {
 //        ModeloCadastroPerfilUsuarioId modeloRetorno = perfilService.vincularUsuariosEmLote(modeloCadastroPerfilUsuarioId);
 //        attributes.addFlashAttribute("sucesso", "Usuários vinculados com sucesso");
-//        return new ResponseEntity<>(modeloRetorno.getPerfil().getId(), HttpStatus.OK);
+//        return ResponseEntity.ok(modeloRetorno.getPerfil().getId());
 //    }
 }

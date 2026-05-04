@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VerificacaoEmailRepository extends CrudRepository<VerificacaoEmailORM, Integer> {
+public interface VerificacaoEmailRepository extends CrudRepository<VerificacaoEmailORM, Long> {
 
     // Busca o código mais recente não utilizado de um usuário
     Optional<VerificacaoEmailORM> findFirstByUsuarioAndUtilizadoFalseOrderByCriadoEmDesc(UsuarioORM usuario);

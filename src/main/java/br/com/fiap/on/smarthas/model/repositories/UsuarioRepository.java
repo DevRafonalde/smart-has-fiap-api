@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface UsuarioRepository extends JpaRepository<UsuarioORM, Integer> {
+public interface UsuarioRepository extends JpaRepository<UsuarioORM, Long> {
     List<UsuarioORM> findByNomeAmigavelContaining(String nomeAmigavel);
     UsuarioORM findByEmail(String email);
     UsuarioORM findByCpf(String cpf);

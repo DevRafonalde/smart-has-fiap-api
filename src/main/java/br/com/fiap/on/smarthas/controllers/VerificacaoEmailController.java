@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth/verificacao-email")
 @RequiredArgsConstructor
 public class VerificacaoEmailController {
-
     private final VerificacaoEmailService verificacaoEmailService;
     private final JwtService jwtService;
 
@@ -25,7 +24,7 @@ public class VerificacaoEmailController {
             @RequestHeader("Authorization") String authHeader,
             @RequestBody @Valid VerificacaoEmailRequestDTO request
     ) {
-        int idUsuario = extrairIdDoToken(authHeader);
+        Long idUsuario = extrairIdDoToken(authHeader);
         verificacaoEmailService.verificar(idUsuario, request.getCodigo());
         return ResponseEntity.noContent().build();
     }
@@ -36,12 +35,12 @@ public class VerificacaoEmailController {
     public ResponseEntity<Void> reenviar(
             @RequestHeader("Authorization") String authHeader
     ) {
-        int idUsuario = extrairIdDoToken(authHeader);
+        Long idUsuario = extrairIdDoToken(authHeader);
         verificacaoEmailService.reenviarCodigo(idUsuario);
         return ResponseEntity.accepted().build(); // 202 — processamento assíncrono
     }
 
-    private int extrairIdDoToken(String authHeader) {
+    private Long extrairIdDoToken(String authHeader) {
         String token = authHeader.substring(7);
         return jwtService.validarTokenERetornarId(token);
     }

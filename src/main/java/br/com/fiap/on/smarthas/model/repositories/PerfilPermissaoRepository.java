@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PerfilPermissaoRepository extends JpaRepository<PerfilPermissaoORM, Integer> {
+public interface PerfilPermissaoRepository extends JpaRepository<PerfilPermissaoORM, Long> {
     List<PerfilPermissaoORM> findByPerfil(PerfilORM perfil);
     List<PerfilPermissaoORM> findByPermissao(PermissaoORM permissao);
 }
