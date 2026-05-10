@@ -3,7 +3,6 @@ package br.com.fiap.on.smarthas.services;
 import br.com.fiap.on.smarthas.exceptions.AtributoJaUtilizadoException;
 import br.com.fiap.on.smarthas.exceptions.ElementoNaoEncontradoException;
 import br.com.fiap.on.smarthas.model.entities.dto.AulaDTO;
-import br.com.fiap.on.smarthas.model.entities.dto.UsuarioDTO;
 import br.com.fiap.on.smarthas.model.entities.orm.AulaAssistidaORM;
 import br.com.fiap.on.smarthas.model.entities.orm.AulaORM;
 import br.com.fiap.on.smarthas.model.entities.orm.ModuloORM;
@@ -65,6 +64,11 @@ public class AulaService {
         return aulas.stream()
                 .map(usuario -> modelMapper.map(usuario, AulaDTO.class))
                 .toList();
+    }
+
+    public AulaDTO buscarPorID(Long id) {
+        AulaORM aula = aulaRepository.findById(id).orElseThrow(() -> new ElementoNaoEncontradoException("Aula não encontrada"));
+        return modelMapper.map(aula, AulaDTO.class);
     }
 
     public AulaDTO editar(@Valid AulaDTO aulaRecebida) {

@@ -2,8 +2,6 @@ package br.com.fiap.on.smarthas.controllers;
 
 import br.com.fiap.on.smarthas.annotations.Permissao;
 import br.com.fiap.on.smarthas.model.entities.dto.AulaDTO;
-import br.com.fiap.on.smarthas.model.entities.dto.AulaDTO;
-import br.com.fiap.on.smarthas.model.entities.dto.AulaDTO;
 import br.com.fiap.on.smarthas.services.AulaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -106,6 +104,26 @@ public class AulaController {
     public ResponseEntity<List<AulaDTO>> listarTodasAulas(Pageable pageable) {
         List<AulaDTO> aulas = aulaService.listarTodas(pageable);
         return new ResponseEntity<>(aulas, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Buscar aula por ID",
+            description = "Retorna uma aula específica pelo ID dela" +
+                    "Requer autenticação e permissão `buscaraulaporid`.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Token ausente ou inválido",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "403", description = "Sem permissão `buscaraulaporid`",
+                    content = @Content(schema = @Schema(hidden = true)))
+    })
+    @GetMapping("/listar/{id}")
+    @Permissao(rota = "buscaraulaporid")
+    public ResponseEntity<AulaDTO> buscarAulaPorId(Long id) {
+        AulaDTO aula = aulaService.buscarPorID(id);
+        return new ResponseEntity<>(aula, HttpStatus.OK);
     }
 
     @Operation(
