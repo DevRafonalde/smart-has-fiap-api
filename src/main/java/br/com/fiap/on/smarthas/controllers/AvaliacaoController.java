@@ -2,7 +2,8 @@ package br.com.fiap.on.smarthas.controllers;
 
 import br.com.fiap.on.smarthas.annotations.Permissao;
 import br.com.fiap.on.smarthas.model.entities.dto.AvaliacaoCompletaDTO;
-import br.com.fiap.on.smarthas.model.entities.dto.TentativaAvaliacaoDTO;
+import br.com.fiap.on.smarthas.model.entities.dto.TentativaAvaliacaoRequestDTO;
+import br.com.fiap.on.smarthas.model.entities.dto.TentativaAvaliacaoResponseDTO;
 import br.com.fiap.on.smarthas.services.AvaliacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,8 @@ public class AvaliacaoController {
 
     @PostMapping("/submeter")
     @Permissao(rota = "submeteravaliacao")
-    public ResponseEntity<TentativaAvaliacaoDTO> submeterAvaliacao(@RequestBody TentativaAvaliacaoDTO tentativaAvaliacaoDTO) {
-        return ResponseEntity.ok(avaliacaoService.submeterAvaliacao(tentativaAvaliacaoDTO));
+    public ResponseEntity<TentativaAvaliacaoResponseDTO> submeterAvaliacao(@RequestBody TentativaAvaliacaoRequestDTO tentativaAvaliacaoRequestDTO) {
+        return ResponseEntity.ok(avaliacaoService.submeterAvaliacao(tentativaAvaliacaoRequestDTO));
     }
 
     @GetMapping("/modulo/{idModulo}/aluno/{idAluno}")

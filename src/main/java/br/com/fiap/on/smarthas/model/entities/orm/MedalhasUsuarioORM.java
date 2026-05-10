@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_medalhas_usuario")
@@ -27,4 +30,8 @@ public class MedalhasUsuarioORM {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idTentativa", referencedColumnName = "id", nullable = false, updatable = false)
     private TentativaAvaliacaoORM tentativaAvaliacao;
+
+    @Column(name = "dataHora")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataHora = LocalDateTime.now();
 }

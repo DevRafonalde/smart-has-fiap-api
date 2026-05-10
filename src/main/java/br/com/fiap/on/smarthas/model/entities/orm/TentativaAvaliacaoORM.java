@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "t_tentativas_avaliacao")
@@ -29,4 +32,8 @@ public class TentativaAvaliacaoORM {
 
     @Column(name = "aprovado", nullable = false)
     private boolean aprovado;
+
+    @Column(name = "dataConclusao")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dataConclusao;
 }
