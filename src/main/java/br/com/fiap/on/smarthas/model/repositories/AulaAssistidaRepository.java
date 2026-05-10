@@ -14,4 +14,6 @@ public interface AulaAssistidaRepository extends JpaRepository<AulaAssistidaORM,
 //    long countAssistidas(Long alunoId, Long moduloId);
 
     long countAulaAssistidaORMByAluno_IdAndAula_Modulo_Id(Long alunoId, Long moduloId);
+
+    void deleteAllByAula_Id(Long aulaId);
 }
