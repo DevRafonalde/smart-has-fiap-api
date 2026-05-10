@@ -26,6 +26,9 @@ public class AvaliacaoORM {
     @Column(name = "pontuacaoMinima", nullable = false)
     private Integer pontuacaoMinima = 70;
 
+    @Column(name = "tempoProvaEmMinutos", nullable = false)
+    private Integer tempoProvaEmMinutos;
+
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idModulo", referencedColumnName = "id", unique = true, nullable = false, updatable = false)
     private ModuloORM modulo;
